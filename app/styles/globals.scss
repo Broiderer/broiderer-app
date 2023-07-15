@@ -1,0 +1,36 @@
+@import './reset.scss';
+@import './vars.scss';
+
+.bro-title {
+    font-size: 1.8rem;
+}
+
+.bro-emphasis {
+    color: $color-primary;
+    font-weight: 600;
+}
+
+.bro-link {
+    color: $color-primary;
+
+    &:hover {
+        background-color: $color-primary-trans;
+    }
+}
+
+.bro-button {
+    font-size: .875rem;
+    line-height: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: $color-primary;
+    border-radius: 0.3rem;
+    background-image: none;
+    border: 2px solid $color-primary-dark;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $color-primary-dark;
+    }
+}
