@@ -7,7 +7,8 @@ import ErrorMessage from './error/error';
 import Form from './form/form';
 import { ConvertOptions, ConvertOptionType } from './model';
 
-const apiUrl = 'http://127.0.0.1:5000';
+/* const apiUrl = 'http://127.0.0.1:5000'; */
+const apiUrl = 'https://guillaumemmm.pythonanywhere.com';
 
 const svgConvertOptions: ConvertOptions = {
     [ConvertOptionType.distance]: '',
