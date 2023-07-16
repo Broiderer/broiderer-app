@@ -2,12 +2,14 @@ import { MouseEventHandler } from "react";
 import styles from './download.module.scss';
 
 
-export default function Download(props: {onBackToUpload: MouseEventHandler<HTMLAnchorElement>, downloadFileUrl: string}) {
+export default function Download(props: {
+    onBackToUpload: MouseEventHandler<HTMLAnchorElement>, 
+    downloadFileUrl: string,
+    apiUrl: string
+}) {
 
     const handleDownloadClick = () => {
-        const apiUrl = 'https://guillaumemmm.pythonanywhere.com';
-        
-        const downloadUrl = `${apiUrl}${props.downloadFileUrl}`;
+        const downloadUrl = `${props.apiUrl}${props.downloadFileUrl}`;
         var a = document.createElement("a");
         a.href = downloadUrl;
         a.setAttribute("download", "file");

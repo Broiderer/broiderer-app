@@ -1,22 +1,36 @@
 'use client';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { ConvertOptions, ConvertOptionType } from '../model';
 import styles from './form.module.scss';
+import Options from './options/options';
 
-export default function Form(props: {onFileInput: Function}) {
+const Form = (props: {onFileInput: Function, from: "pes" | "svg", to: "pes" | "svg", convertOptions: ConvertOptions | null, onConvertOptionsChange: Function}) => {
 
-    const onDrop = useCallback((acceptedFiles: File[]) => {
+    const onDrop = (acceptedFiles: File[]) => {
         props.onFileInput(acceptedFiles[0])
-    }, []);
+    };
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: {
-        'image/svg+xml': ['.svg'], 'accpliaction/pes': ['.pes']
-    } });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
+        onDrop, 
+        accept: props.from === 'svg' ? {'image/svg+xml': ['.svg']} : {'accpliaction/pes': ['.pes']}
+    });
+
+    const optionChangeHandler = (value: string, type: ConvertOptionType) => {
+        props.onConvertOptionsChange(value, type)
+    }
 
     return <form className={styles.form}>
+        {props.convertOptions && 
+            <div className={styles.options}>
+                <Options onOptionChange={optionChangeHandler}></Options>
+            </div>
+        }
         <div className={styles['upload-target']} {...getRootProps()}>
-            <label>Drop a .pes or .svg file here to be converted (max 100kB)</label>
+            <label>Drop a .{props.from} file here to be converted to .{props.to} (max 100kB)</label>
             <input type="file" {...getInputProps()}></input>
         </div>
     </form>
 }
+
+export default Form;

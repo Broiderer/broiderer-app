@@ -7,5 +7,22 @@
     .header-left {
         font-size: 1.5rem;
         font-weight: 600;
+
+        a {
+            text-decoration: none;
+            color: black;
+
+            &:visited {
+                color: black;
+            }
+        }
+    }
+
+    .header-right {
+        nav > ul {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
     }
 }

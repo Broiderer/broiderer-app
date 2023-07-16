@@ -10,10 +10,20 @@
     font-weight: 600;
 }
 
+.bro-muted {
+    opacity: 0.7;
+}
+
 .bro-link {
     color: $color-primary;
+    padding: 2px;
+    border-radius: 3px;
 
     &:hover {
+        background-color: $color-primary-trans;
+    }
+
+    &.active {
         background-color: $color-primary-trans;
     }
 }
