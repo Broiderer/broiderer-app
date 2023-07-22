@@ -27,7 +27,7 @@ async function uploadFile(file: File, options: ConvertOptions | null) {
         inlineOptions += Object.keys(options).map((key, i) => {
             const opt = options[key as ConvertOptionType];
             return `${(i === 0 || !opt) ? '' : '&'}${opt ? `${key}=${opt}px` : ''}`
-        });
+        }).join('');
     }
 
     return fetch(
