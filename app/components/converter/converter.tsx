@@ -7,8 +7,7 @@ import ErrorMessage from './error/error';
 import Form from './form/form';
 import { ConvertOptions, ConvertOptionType } from './model';
 
-/* const apiUrl = 'http://127.0.0.1:5000'; */
-const apiUrl = 'https://guillaumemmm.pythonanywhere.com';
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://guillaumemmm.pythonanywhere.com';
 
 const svgConvertOptions: ConvertOptions = {
     [ConvertOptionType.distance]: '',
@@ -48,7 +47,6 @@ function parseErrorFromResponseText(responseText: string): string {
   }
 
 export default function Converter(props: {from: "pes" | "svg", to: "pes" | "svg"}) {
-
     const [fileToUpload, setFileToUpload]: [File | null, Function] = useState(null);
     const [uploadedFileUrl, setUploadedFileUrl]: [string, Function] = useState('');
     const [loadingUpload, setLoadingUpload]: [boolean, Function] = useState(false);
