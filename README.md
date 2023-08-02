@@ -11,4 +11,5 @@ When ran locally, the app will use the env variables in `.env.development` (espe
 The app should be launched on `localhost:3000`.
 
 ## Deployment
-Pushing to the `master` branch will deploy the app to [www.boiderer.com](https://www.broiderer.com).
+Pushing to the `master` branch will deploy the app to [www.boiderer.com](https://www.broiderer.com).\
+Pushing to the `dev` branch will deploy to the test app [devbroiderer](https://devbroiderer.netlify.app).
