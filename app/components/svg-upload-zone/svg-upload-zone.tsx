@@ -2,11 +2,10 @@
 import Form from '../converter/form/form';
 import styles from './svg-upload-zone.module.scss';
 
-export default function SvgUploadZone({onUploadSvg}: {onUploadSvg: (svg: string) => void}) {
+export default function SvgUploadZone({onUploadSvg}: {onUploadSvg: (svg: File) => void}) {
 
     const fileInputHandler = async (file: File) => {
-        const svgText = await file.text();
-        onUploadSvg(svgText)
+        onUploadSvg(file)
     }
 
     return <div className={styles.svgUploadZone}>

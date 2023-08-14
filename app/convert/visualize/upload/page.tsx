@@ -4,15 +4,15 @@ import SvgUploadZone from "@/app/components/svg-upload-zone/svg-upload-zone";
 import React, { useState } from "react";
 
 const Upload = () => {
-    const [uploadedSvgText, setUploadedSvgText] = useState<string | null>(null);
+    const [uploadedSvg, setUploadedSvg] = useState<File | null>(null);
 
-    const uploadedSvgHandler = (svgText: string) => {
-        setUploadedSvgText(svgText)
+    const uploadedSvgHandler = (svg: File) => {
+        setUploadedSvg(svg)
     }
 
     return <>
-        {uploadedSvgText && <SvgEditor svgText={uploadedSvgText || ''} />}
-        {!uploadedSvgText && <SvgUploadZone onUploadSvg={uploadedSvgHandler}/>}
+        {uploadedSvg && <SvgEditor svg={uploadedSvg} />}
+        {!uploadedSvg && <SvgUploadZone onUploadSvg={uploadedSvgHandler}/>}
     </>;
 };
 
