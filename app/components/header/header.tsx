@@ -17,6 +17,7 @@ export default function Header() {
                 <ul>
                     <Link href="/convert/svg2pes" className={"bro-link " + (pathName == "/convert/svg2pes" ? "active" : "")}>svg2pes</Link>
                     <Link href="/convert/pes2svg" className={"bro-link " + (pathName == "/convert/pes2svg" ? "active" : "")}>pes2svg</Link>
+                    <Link href="/convert/visualize" className={"bro-link " + (pathName == "/convert/visualize" ? "active" : "")}>visualize</Link>
                 </ul>
             </nav>
         </div>

@@ -5,7 +5,14 @@ import { ConvertOptions, ConvertOptionType } from '../model';
 import styles from './form.module.scss';
 import Options from './options/options';
 
-const Form = (props: {onFileInput: Function, from: "pes" | "svg", to: "pes" | "svg", convertOptions: ConvertOptions | null, onConvertOptionsChange: Function}) => {
+const Form = (props: {
+    onFileInput: Function, 
+    from: "pes" | "svg", 
+    to: "pes" | "svg", 
+    convertOptions?: ConvertOptions | null, 
+    onConvertOptionsChange?: Function,
+    placeholder?: string
+}) => {
 
     const onDrop = (acceptedFiles: File[]) => {
         props.onFileInput(acceptedFiles[0])
@@ -17,6 +24,9 @@ const Form = (props: {onFileInput: Function, from: "pes" | "svg", to: "pes" | "s
     });
 
     const optionChangeHandler = (value: string, type: ConvertOptionType) => {
+        if (!props.onConvertOptionsChange) {
+            return;
+        }
         props.onConvertOptionsChange(value, type)
     }
 
@@ -27,7 +37,7 @@ const Form = (props: {onFileInput: Function, from: "pes" | "svg", to: "pes" | "s
             </div>
         }
         <div className={styles['upload-target']} {...getRootProps()}>
-            <label>Drop a .{props.from} file here to be converted to .{props.to} (max 100kB)</label>
+            <label>{props.placeholder || `Drop a .${props.from} file here to be converted to .${props.to} (max 100kB)`}</label>
             <input type="file" {...getInputProps()}></input>
         </div>
     </form>
