@@ -1,8 +1,8 @@
 'use client';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styles from './svg-editor.module.scss';
-import { subdividePath } from './utils/path-transform';
 import * as svgson from 'svgson';
+import { getSvgDataForOptions } from './utils/path-transform';
 
 export type SvgTransformOptions = {
     path: {
@@ -30,7 +30,6 @@ export default function SvgEditor({ svg }: { svg: File }) {
         reader.onload = async () => {
             let parsedSvg = await svgson.parse(await svg.text())
             parsedSvg = addDataIds(parsedSvg)
-            console.log(parsedSvg)
             setSvgData(parsedSvg);
             setInitialSvgData({...parsedSvg})
         };
@@ -38,18 +37,9 @@ export default function SvgEditor({ svg }: { svg: File }) {
     }, [svg])
 
     useEffect(() => {
-        const originalPaths = document.getElementById('svg-sandbox-hidden')?.querySelectorAll('path');
-        originalPaths?.forEach(path => {
-            const matchingDisplayedPaths = Array.from(document.getElementById('svg-sandbox')?.querySelectorAll(`[data-broiderer-id=${path.getAttribute('data-broiderer-id')}]`) || []) as SVGPathElement[];
-            const parent = matchingDisplayedPaths[0].parentElement;
-            const subPaths = subdividePath(path, svgTransformOptions.path.step)
-            matchingDisplayedPaths.forEach(matchingPath => {
-                parent?.removeChild(matchingPath);
-            })
-            subPaths.forEach(path => {
-                parent?.appendChild(path)
-            });
-        })
+        if (initialSvgData) {
+            setSvgData(getSvgDataForOptions(initialSvgData, svgTransformOptions, document))
+        }
     }, [svgTransformOptions.path.step])
 
     const rangeChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
