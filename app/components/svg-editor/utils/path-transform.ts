@@ -2,13 +2,28 @@ import * as svgson from 'svgson';
 import { SvgTransformOptions } from '../svg-editor';
 
 export const getSvgDataForOptions = (svgData: svgson.INode, options: SvgTransformOptions, document: Document): svgson.INode => {
+
+    const paths = getPathsInSvg(svgData)
+
     const newSvgData: svgson.INode = {...svgData, children: svgData.children.map(child => {
-        if (child.name === 'path') {
+        if (paths.includes(child)) {
+            child.attributes.stroke = options.path.stroke;
             child = getChildGroupForPaths(child, document, options.path.step)
         }
         return child;
     })}
+
     return newSvgData
+}
+
+const getPathsInSvg = (node: svgson.INode): svgson.INode[] => {
+    if (node.name === 'path') {
+        return [node];
+    }
+    if (['svg', 'g'].includes(node.name)) {
+        return node.children.map(child => getPathsInSvg(child)).flat();
+    }
+    return []
 }
 
 const getChildGroupForPaths = (child: svgson.INode, document: Document, stepLength: number): svgson.INode => {
@@ -22,8 +37,7 @@ const getChildGroupForPaths = (child: svgson.INode, document: Document, stepLeng
     for (let i = 0; i < Math.trunc(length / stepLength); i++) {
         childrenPaths.push({...child, attributes: {
             ...child.attributes, 
-            d: getDAttributeForSubPath(pathElm, stepLength, i),
-            stroke: i % 2 === 0 ? 'red' : 'blue'
+            d: getDAttributeForSubPath(pathElm, stepLength, i)
         }})
     }
     

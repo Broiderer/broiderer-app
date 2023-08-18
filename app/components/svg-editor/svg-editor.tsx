@@ -3,10 +3,12 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import styles from './svg-editor.module.scss';
 import * as svgson from 'svgson';
 import { getSvgDataForOptions } from './utils/path-transform';
+import SvgEditorForm from './svg-editor-form/svg-editor-form';
 
 export type SvgTransformOptions = {
     path: {
-        step: number
+        step: number,
+        stroke: string
     }
 }
 
@@ -21,7 +23,7 @@ const addDataIds = (node: svgson.INode): svgson.INode => {
 export default function SvgEditor({ svg }: { svg: File }) {
     const [svgData, setSvgData] = useState<svgson.INode | null>(null);
     const [initialSvgData, setInitialSvgData] = useState<svgson.INode | null>(null);
-    const [svgTransformOptions, setSvgTransformOptions] = useState<SvgTransformOptions>({path: {step: 5}});
+    const [svgTransformOptions, setSvgTransformOptions] = useState<SvgTransformOptions>({path: {step: 5, stroke: "red"}});
 
     const svgRef = useRef<HTMLIFrameElement>(null)
 
@@ -40,16 +42,10 @@ export default function SvgEditor({ svg }: { svg: File }) {
         if (initialSvgData) {
             setSvgData(getSvgDataForOptions(initialSvgData, svgTransformOptions, document))
         }
-    }, [svgTransformOptions.path.step])
-
-    const rangeChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        setSvgTransformOptions(prevOptions => (
-            {...prevOptions, path: {...prevOptions.path, step: Number(event.target.value)}}
-        ))
-    }
+    }, [svgTransformOptions])
 
     return <div className={styles['svg-editor']}>
-        <input type="range" min={1} max={20} onChange={rangeChangeHandler}></input>
+        <SvgEditorForm svgTransformOptions={svgTransformOptions} setSvgTransformOptions={setSvgTransformOptions}></SvgEditorForm>
         <div id="svg-sandbox" dangerouslySetInnerHTML={{__html: svgData ? svgson.stringify(svgData) : ''}}></div>
 
         <div id="svg-sandbox-hidden" aria-hidden="true" className={styles['hidden-svg']} dangerouslySetInnerHTML={{__html: initialSvgData ? svgson.stringify(initialSvgData) : ''}}></div>
