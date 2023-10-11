@@ -1,0 +1,13 @@
+.editor-svg {
+    position: relative;
+    background-color: #999;
+
+    svg {
+        border: 1px solid red;
+    }
+
+    .test-editor-svg {
+        opacity: 0;
+        position: absolute;
+    }
+}
