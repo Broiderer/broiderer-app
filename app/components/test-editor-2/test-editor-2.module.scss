@@ -4,10 +4,19 @@
 
     svg {
         border: 1px solid red;
+        z-index: 1;
+        position: relative;
     }
 
     .test-editor-svg {
-        opacity: 0;
+        opacity: 0.6;
         position: absolute;
+        z-index: 0;
+
+        svg {
+            path {
+                fill: red;
+            }
+        }
     }
 }

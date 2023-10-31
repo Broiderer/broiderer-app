@@ -1,7 +1,7 @@
 
 import Footer from '../components/footer/footer';
 import Header from '../components/header/header';
-import TestEditor2 from '../components/test-editor-2/test-editor-2';
+import TestEditor2 from '../components/test-editor-2/test-editor-3';
 import styles from './styles.module.scss';
 
 export default function Test() {

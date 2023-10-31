@@ -1,4 +1,4 @@
-type Position = {x: number, y: number};
+export type Position = {x: number, y: number};
 type Stitch = Position & {isSkip?: boolean};
 type LineStitches = {[key: number]: Stitch[]}
 
@@ -10,23 +10,28 @@ export const getStiches = (pathData: string, gap: number, fillGap: number = 0, r
     const pointsPerLines: LineStitches = {}
 
     //  Create a gap-spaced vertical grid
-    const gridPathsX = Array(Math.round(1000 / gap)).fill(null).map((_, i) => i * gap);
+    const gridOffset = Math.random() / 100
+    const gridPathsX = Array(Math.round(1000 / gap)).fill(null).map((_, i) => i * gap + gridOffset);
     const length = path.getTotalLength();
 
     let index = 0;
     let prevPos: Position | null = null;
-    while (index < length) {
+    while (index <= length) {
         const localPos = path.getPointAtLength(index);
-        
+
         const matchingPoint = !prevPos ? gridPathsX.find(pos => pos === localPos.x) : gridPathsX.find(pos => (localPos.x >= pos && prevPos!.x < pos) || (localPos.x <= pos && prevPos!.x > pos))
 
-        if ((matchingPoint || matchingPoint === 0) && distance(prevPos || localPos, localPos) <= gap + 1) {
+        const isBigGap = !!prevPos && distance(localPos, prevPos) > gap * 2;
+
+        if (matchingPoint && !isBigGap) {
             //  If the point is on the grid, save it
-            pointsPerLines[matchingPoint] = (pointsPerLines[matchingPoint] || []).concat({x: matchingPoint, y: localPos.y})
+            pointsPerLines[matchingPoint] = (pointsPerLines[matchingPoint] || []).concat({x: matchingPoint, y: prevPos ? (prevPos.y + localPos.y) / 2 : localPos.y})
         }
         prevPos = localPos
-        index += gap;
+        index += gap / 2;
     }
+
+    console.log(pointsPerLines, path.getPointAtLength(index))
 
     Object.keys(pointsPerLines).forEach((key, i) => {
         const keyTmp = key as any as keyof LineStitches;
@@ -39,52 +44,26 @@ export const getStiches = (pathData: string, gap: number, fillGap: number = 0, r
     while (levelIndex < maxLevelIndex) {
         const keys = Object.keys(pointsPerLines).map(Number)
         keys.sort((keyA, keyB) => keyA - keyB)
+        let prevPoints: Stitch[] = [];
+
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
             const pointsToDraw = pointsPerLines[key].slice(levelIndex).slice(0, 2)
             const points = i % 2 === 1 ? pointsToDraw.reverse() : pointsToDraw;
-/*             if (i > 0 && points.length > 0 && distance(points[0], stitchesInOrder[stitchesInOrder.length - 1]) > 5 * gap) {
-                stitchesInOrder[stitchesInOrder.length - 1].isSkip = true;
-            } */
-    
-            if (points.length > 1) {
-                stitchesInOrder = stitchesInOrder.concat(getStitchesInBetween(points[0], points[1], fillGap, true, false));
+            if (points.length > 0 && prevPoints.length > 0 && points.every(pt => distance(prevPoints[0], pt) > gap * 2 && distance(prevPoints[1] || prevPoints[0], pt) > gap * 2)) {
+                points[points.length - 1].isSkip = true
+            }
+            stitchesInOrder = stitchesInOrder.concat(points);
+            if (points.length > 0) {
+                prevPoints = points.concat()
             }
         }
-    
+
+        stitchesInOrder[stitchesInOrder.length - 1].isSkip = true
         levelIndex += 2;
     }
 
-    stitchesInOrder = stitchesInOrder.map((stitch, i) => {
-
-        if (i < stitchesInOrder.length - 1) {
-            if (distance(stitch, stitchesInOrder[i + 1]) > 10 * gap) {
-                stitch.isSkip = true
-            }
-        }
-
-        return stitch;
-    })
-/* 
-    if (fillGap) {
-        let filledStitchesInOrder: Stitch[] = [];
-        stitchesInOrder.forEach((stitch, i) => {
-            if (i > 0) {
-                const prevStitch = stitchesInOrder[i - 1];
-                if (prevStitch.isSkip) {
-                    filledStitchesInOrder = filledStitchesInOrder.concat(prevStitch)
-                } else {
-                    filledStitchesInOrder = filledStitchesInOrder.concat(
-                        getStitchesInBetween(stitchesInOrder[i - 1], stitch, fillGap, true, randomizeFirstFillingStep)
-                    )
-                }
-            }
-        })
-        
-        stitchesInOrder = filledStitchesInOrder.concat(stitchesInOrder[stitchesInOrder.length - 1]);
-    } */
-
-    let splittedStitches: Stitch[][] = [];
+    /* let splittedStitches: Stitch[][] = [];
     let indexTmp = 0
     stitchesInOrder.forEach((stitch, i) => {
         if (stitch.isSkip) {
@@ -99,15 +78,17 @@ export const getStiches = (pathData: string, gap: number, fillGap: number = 0, r
         splittedStitches = [stitchesInOrder]
     }
 
+    console.log(splittedStitches.length)
+
     const splittedStitchesOrdered: Stitch[][] = splittedStitches.slice(0, 1)
-    const splittedStitchesTmp = splittedStitches.slice()
-    while (splittedStitchesOrdered.length < splittedStitches.length) {
+    const splittedStitchesTmp = splittedStitches.slice() */
+    /* while (splittedStitchesOrdered.length < splittedStitches.length) {
         const [closestGroup, closestIndex] = getClosestStitchesArrayStartToPoint(splittedStitchesTmp, splittedStitchesOrdered[splittedStitchesOrdered.length - 1][splittedStitchesOrdered[splittedStitchesOrdered.length - 1].length - 1])
         splittedStitchesTmp.splice(closestIndex, 1)
         splittedStitchesOrdered.push(closestGroup)
-    }
+    } */
 
-    return splittedStitchesOrdered.flat();
+    return stitchesInOrder;
 }
 
 export function distance(pointA: Position, pointB: Position) {

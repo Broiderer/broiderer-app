@@ -1,5 +1,6 @@
 
 import paper from "paper";
+import { Position } from "./fillStitches2";
 
 export const subdividePathForPaperPath = (
     path: paper.Path,
