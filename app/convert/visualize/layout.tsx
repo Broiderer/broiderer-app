@@ -1,22 +1,22 @@
-import Footer from "@/app/components/footer/footer"
-import Header from "@/app/components/header/header"
-import styles from './styles.module.scss';
+import Footer from '@/app/components/footer/footer'
+import Header from '@/app/components/header/header'
+import styles from './styles.module.scss'
+import Editor from '@/app/components/editor/editor'
 
 export default function VisualizeLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode
+  children: React.ReactNode
 }) {
-    return <>
-        <main className={styles.visualize}>
-            <Header></Header>
-            <div className={styles.content}>
-                <h1 className="bro-title">Visualize your svg files</h1>
-                <div className={styles['visualize-container']}>
-                    {children}
-                </div>
-            </div>
-            <Footer></Footer>
-        </main>
+  return (
+    <>
+      <main className={styles.visualize}>
+        <Header></Header>
+        <div className={styles['visualize-content']}>
+          <Editor></Editor>
+        </div>
+        <Footer></Footer>
+      </main>
     </>
+  )
 }
