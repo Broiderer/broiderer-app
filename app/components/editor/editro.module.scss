@@ -2,4 +2,9 @@
   width: 100% !important;
   height: 100% !important;
   flex: 1;
+  cursor: grab;
+
+  &.dragging {
+    cursor: grabbing;
+  }
 }
