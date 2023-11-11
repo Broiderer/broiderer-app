@@ -4,6 +4,7 @@ import { MouseEvent, WheelEvent, useEffect, useRef, useState } from 'react'
 import * as paper from 'paper'
 import styles from './editro.module.scss'
 import { Point } from 'paper/dist/paper-core'
+import EditorCursor from './editor-cursor/editor-cursor'
 
 paper.install(document)
 const ZOOM_FACTOR = 1.02
@@ -265,16 +266,24 @@ export default function Editor() {
   }
 
   return (
-    <canvas
-      className={`${styles['paper-canvas']} ${
-        isDragging ? styles['dragging'] : ''
-      }`}
-      ref={paperRef}
-      onWheel={wheelHandler}
-      onMouseDown={mouseDownHandler}
-      onMouseUp={mouseUpHandler}
-      onMouseOut={mouseOutHandler}
-      onMouseMove={mouseMoveHandler}
-    ></canvas>
+    <div className={styles['editor-container']}>
+      {paperRef && paper.view && (
+        <EditorCursor
+          canvasRef={paperRef}
+          paperView={paper.view}
+        ></EditorCursor>
+      )}
+      <canvas
+        className={`${styles['paper-canvas']} ${
+          isDragging ? styles['dragging'] : ''
+        }`}
+        ref={paperRef}
+        onWheel={wheelHandler}
+        onMouseDown={mouseDownHandler}
+        onMouseUp={mouseUpHandler}
+        onMouseOut={mouseOutHandler}
+        onMouseMove={mouseMoveHandler}
+      ></canvas>
+    </div>
   )
 }

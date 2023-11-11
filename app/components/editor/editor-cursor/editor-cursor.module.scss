@@ -1,0 +1,20 @@
+.editor-cursor {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #ffffffcc;
+  border-bottom: 1px solid blue;
+  border-left: 1px solid blue;
+  padding: 5px;
+  min-width: 70px;
+
+  &-position {
+    &-name {
+      font-weight: 700;
+    }
+
+    &-value {
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}
