@@ -11,6 +11,9 @@ export default function EditorCursor({
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
+    if (!paperView) {
+      return
+    }
     const handleMouseMove = (e: MouseEvent) => {
       setCursorPosition({
         x: Math.round(e.offsetX / paperView.zoom + paperView.bounds.left),
@@ -23,7 +26,7 @@ export default function EditorCursor({
     return () => {
       canvasRef.current?.removeEventListener('mousemove', handleMouseMove)
     }
-  }, [])
+  }, [paperView, canvasRef])
 
   return (
     <div className={styles['editor-cursor']}>
