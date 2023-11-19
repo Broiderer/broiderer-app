@@ -7,6 +7,10 @@ import EditorSidebar from './editor-sidebar/editor-sidebar'
 import EditorCanvas from './editor-canvas/editor-canvas'
 
 export type EditorSettings = {
+  navigation: {
+    zoom: number
+    center: [number, number]
+  }
   grid: {
     displayAxes: boolean
     displayGrid: boolean
@@ -14,25 +18,27 @@ export type EditorSettings = {
   }
 }
 
+const ZOOM_BOUNDS = { min: 0.5, max: 5 }
+
 const DEFAULT_SETTINGS: EditorSettings = {
+  navigation: { zoom: ZOOM_BOUNDS.min, center: [0, 0] },
   grid: { displayAxes: true, displayPointerPosition: true, displayGrid: true },
 }
 
 export default function Editor() {
   const [settings, setSettings] = useState<EditorSettings>(DEFAULT_SETTINGS)
 
-  function handleSettingsChanged(settings: EditorSettings) {
-    setSettings(settings)
-  }
-
   return (
     <div className={styles['editor-container']}>
       <div className={styles['editor-layout']}>
         <EditorSidebar
           settings={settings}
-          updateSettings={handleSettingsChanged}
+          updateSettings={setSettings}
         ></EditorSidebar>
-        <EditorCanvas settings={settings}></EditorCanvas>
+        <EditorCanvas
+          settings={settings}
+          onSettingsChange={setSettings}
+        ></EditorCanvas>
       </div>
     </div>
   )

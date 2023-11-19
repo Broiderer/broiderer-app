@@ -4,9 +4,11 @@ import styles from './editor-cursor.module.scss'
 export default function EditorCursor({
   canvasRef,
   paperView,
+  zoom,
 }: {
   canvasRef: RefObject<HTMLCanvasElement>
   paperView: paper.View
+  zoom: number
 }) {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 })
 
@@ -40,6 +42,12 @@ export default function EditorCursor({
         <span className={styles['editor-cursor-position-name']}>y </span>
         <span className={styles['editor-cursor-position-value']}>
           {cursorPosition.y}
+        </span>
+      </div>
+      <div className={styles['editor-cursor-position']}>
+        <span className={styles['editor-cursor-position-name']}>z </span>
+        <span className={styles['editor-cursor-position-value']}>
+          {zoom.toFixed(2)}
         </span>
       </div>
     </div>

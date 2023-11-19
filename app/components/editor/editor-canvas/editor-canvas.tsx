@@ -1,35 +1,52 @@
-import { MouseEvent, WheelEvent, useEffect, useState, createRef } from 'react'
+import {
+  MouseEvent,
+  WheelEvent,
+  useEffect,
+  useState,
+  createRef,
+  SetStateAction,
+  Dispatch,
+  KeyboardEvent,
+} from 'react'
 import styles from './editor-canvas.module.scss'
 import { Point } from 'paper/dist/paper-core'
 import * as paper from 'paper'
 import { EditorSettings } from '../editor'
 import EditorCursor from '../editor-cursor/editor-cursor'
+import EditorNavigation from '../editor-navigation/editor-navigation'
 
-const ZOOM_FACTOR = 1.02
-const ZOOM_BOUNDS = { min: 0.5, max: 5 }
+const ZOOM_FACTOR = 1.05
+export const ZOOM_BOUNDS = { min: 0.1, max: 10 }
 const GRID_GAP = 50
 
-const EditorCanvas = ({ settings }: { settings: EditorSettings }) => {
+const EditorCanvas = ({
+  settings,
+  onSettingsChange,
+}: {
+  settings: EditorSettings
+  onSettingsChange: Dispatch<SetStateAction<EditorSettings>>
+}) => {
   const canvasRef = createRef<HTMLCanvasElement>()
   const [isDragging, setIsDragging] = useState<boolean>(false)
-  const [hasViewLoaded, setHasViewLoaded] = useState<boolean>(false)
+  const [viewLoaded, setViewLoaded] = useState<boolean>(false)
 
   useEffect(() => {
     if (canvasRef?.current) {
       paper.install(document)
       paper.setup(canvasRef.current)
-      setHasViewLoaded(true)
 
       initFakeScene()
-      updateAxes(paper.view)
-      updateGrid(paper.view)
+      setViewLoaded(true)
     }
   }, [])
 
   useEffect(() => {
+    paper.view.zoom = settings.navigation.zoom
+    paper.view.center = new Point(settings.navigation.center)
+
     updateAxes(paper.view)
     updateGrid(paper.view)
-  }, [settings.grid])
+  }, [settings.navigation.zoom, settings.navigation.center, settings.grid])
 
   function initFakeScene() {
     const gridLayer = new paper.Layer()
@@ -59,9 +76,6 @@ const EditorCanvas = ({ settings }: { settings: EditorSettings }) => {
 
     fakeLayer.addChild(path)
     fakeLayer.addChild(circle)
-
-    // Draw the view now:
-    paper.view.requestUpdate()
   }
 
   function updateAxes(view: paper.View) {
@@ -227,11 +241,8 @@ const EditorCanvas = ({ settings }: { settings: EditorSettings }) => {
 
   function wheelHandler(e: WheelEvent<HTMLCanvasElement>) {
     // Store previous view state
-    const oldZoom = paper.view.zoom
-    const oldCenter = paper.view.center
-
-    // Get mouse position
-    // It needs to be converted into project coordinates system
+    const oldZoom = settings.navigation.zoom
+    const oldCenter = settings.navigation.center
     const mousePosition = paper.view.viewToProject(
       new Point(e.clientX, e.clientY)
     )
@@ -245,16 +256,16 @@ const EditorCanvas = ({ settings }: { settings: EditorSettings }) => {
       ZOOM_BOUNDS.max
     )
 
-    paper.view.zoom = newZoom
-
-    // Update view position
-    paper.view.center = new Point(
-      oldCenter.x + (mousePosition.x - oldCenter.x) * (1 - oldZoom / newZoom),
-      oldCenter.y + (mousePosition.y - oldCenter.y) * (1 - oldZoom / newZoom)
-    )
-
-    updateAxes(paper.view)
-    updateGrid(paper.view)
+    onSettingsChange((settings) => {
+      settings.navigation.center = [
+        oldCenter[0] +
+          (mousePosition.x - oldCenter[0]) * (1 - oldZoom / newZoom),
+        oldCenter[1] +
+          (mousePosition.y - oldCenter[1]) * (1 - oldZoom / newZoom),
+      ]
+      settings.navigation.zoom = newZoom
+      return { ...settings }
+    })
   }
 
   function mouseDownHandler(e: MouseEvent<HTMLCanvasElement>) {
@@ -262,42 +273,95 @@ const EditorCanvas = ({ settings }: { settings: EditorSettings }) => {
   }
 
   function mouseUpHandler(e: MouseEvent<HTMLCanvasElement>) {
+    onSettingsChange((settings) => {
+      settings.navigation.center = [paper.view.center.x, paper.view.center.y]
+      return { ...settings }
+    })
     setIsDragging(false)
   }
 
   function mouseOutHandler(e: MouseEvent<HTMLCanvasElement>) {
+    onSettingsChange((settings) => {
+      settings.navigation.center = [paper.view.center.x, paper.view.center.y]
+      return { ...settings }
+    })
     setIsDragging(false)
   }
 
   function mouseMoveHandler(e: MouseEvent<HTMLCanvasElement>) {
     if (isDragging) {
-      paper.view.center = new Point(
+      //  Optimization for not re-rendering on every mousemove
+      paper.view.center = new Point([
         paper.view.center.x - e.movementX / paper.view.zoom,
-        paper.view.center.y - e.movementY / paper.view.zoom
-      )
+        paper.view.center.y - e.movementY / paper.view.zoom,
+      ])
+
       updateAxes(paper.view)
       updateGrid(paper.view)
     }
   }
 
+  function keyDownHandler(e: KeyboardEvent<HTMLCanvasElement>) {
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+      return
+    }
+    e.preventDefault()
+    const panSpeed = 10
+    const zoomSpeed = 1.2
+
+    onSettingsChange((settings) => {
+      const panDistance = panSpeed / settings.navigation.zoom
+      const center = settings.navigation.center
+      switch (e.key) {
+        case 'ArrowLeft':
+          settings.navigation.center = [center[0] - panDistance, center[1]]
+          break
+        case 'ArrowRight':
+          settings.navigation.center = [center[0] + panDistance, center[1]]
+          break
+        case 'ArrowUp':
+          if (e.ctrlKey || e.metaKey) {
+            settings.navigation.zoom *= zoomSpeed
+          } else {
+            settings.navigation.center = [center[0], center[1] - panDistance]
+          }
+          break
+        case 'ArrowDown':
+          if (e.ctrlKey || e.metaKey) {
+            settings.navigation.zoom /= zoomSpeed
+          } else {
+            settings.navigation.center = [center[0], center[1] + panDistance]
+          }
+          break
+        default:
+          break
+      }
+      return { ...settings }
+    })
+  }
+
   return (
     <div className={styles['editor-canvas']}>
-      {canvasRef && hasViewLoaded && settings.grid.displayPointerPosition && (
+      {canvasRef && viewLoaded && settings.grid.displayPointerPosition && (
         <EditorCursor
           paperView={paper.view}
           canvasRef={canvasRef}
+          zoom={settings.navigation.zoom}
         ></EditorCursor>
       )}
+      <EditorNavigation onSettingsChange={onSettingsChange}></EditorNavigation>
       <canvas
         className={`${styles['editor-canvas-layout']} ${
           isDragging ? styles['dragging'] : ''
         }`}
+        tabIndex={0}
         ref={canvasRef}
         onWheel={wheelHandler}
         onMouseDown={mouseDownHandler}
         onMouseUp={mouseUpHandler}
         onMouseOut={mouseOutHandler}
         onMouseMove={mouseMoveHandler}
+        onKeyDown={keyDownHandler}
       ></canvas>
     </div>
   )
