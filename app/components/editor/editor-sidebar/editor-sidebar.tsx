@@ -1,5 +1,6 @@
 import { EditorSettings } from '../editor'
 import EditorSidebarFormGrid from './editor-sidebar-forms/editor-sidebar-form-grid/editor-sidebar-form-grid'
+import EditorSidebarFromSvg from './editor-sidebar-forms/editor-sidebar-form-svg/editor-sidebar-form-svg'
 import EditorSidebarSection from './editor-sidebar-section/editor-sidebar-section'
 import styles from './editor-sidebar.module.scss'
 
@@ -14,6 +15,12 @@ export default function EditorSidebar({
     updateSettings({ ...settings, grid: gridSettings })
   }
 
+  function handleImportedImportChange(
+    importSettings: EditorSettings['import']
+  ) {
+    updateSettings({ ...settings, import: importSettings })
+  }
+
   return (
     <div className={styles['sidebar-container']}>
       <EditorSidebarSection title="Editor" initiallyOpened={true}>
@@ -23,8 +30,10 @@ export default function EditorSidebar({
         ></EditorSidebarFormGrid>
       </EditorSidebarSection>
 
-      <EditorSidebarSection title="SVG">
-        Viewport ... Clean ...
+      <EditorSidebarSection title="SVG" initiallyOpened={true}>
+        <EditorSidebarFromSvg
+          updateImportSettings={handleImportedImportChange}
+        ></EditorSidebarFromSvg>
       </EditorSidebarSection>
     </div>
   )

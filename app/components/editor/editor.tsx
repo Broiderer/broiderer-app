@@ -16,6 +16,9 @@ export type EditorSettings = {
     displayGrid: boolean
     displayPointerPosition: boolean
   }
+  import: {
+    initialSvg: string | null
+  }
 }
 
 const ZOOM_BOUNDS = { min: 0.5, max: 5 }
@@ -23,6 +26,7 @@ const ZOOM_BOUNDS = { min: 0.5, max: 5 }
 const DEFAULT_SETTINGS: EditorSettings = {
   navigation: { zoom: ZOOM_BOUNDS.min, center: [0, 0] },
   grid: { displayAxes: true, displayPointerPosition: true, displayGrid: true },
+  import: { initialSvg: null },
 }
 
 export default function Editor() {

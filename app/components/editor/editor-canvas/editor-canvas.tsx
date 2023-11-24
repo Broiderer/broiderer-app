@@ -35,7 +35,12 @@ const EditorCanvas = ({
       paper.install(document)
       paper.setup(canvasRef.current)
 
-      initFakeScene()
+      const gridLayer = new paper.Layer()
+      gridLayer.name = 'broiderer-grid'
+
+      const axesLayer = new paper.Layer()
+      axesLayer.name = 'broiderer-axes'
+
       setViewLoaded(true)
     }
   }, [])
@@ -48,35 +53,19 @@ const EditorCanvas = ({
     updateGrid(paper.view)
   }, [settings.navigation.zoom, settings.navigation.center, settings.grid])
 
-  function initFakeScene() {
-    const gridLayer = new paper.Layer()
-    gridLayer.name = 'broiderer-grid'
+  useEffect(() => {
+    if (settings.import.initialSvg) {
+      paper.project.layers
+        .find((layer) => layer.name === 'broiderer-import')
+        ?.remove()
 
-    const axesLayer = new paper.Layer()
-    axesLayer.name = 'broiderer-axes'
+      const importedLayer = new paper.Layer()
+      importedLayer.name = 'broiderer-import'
 
-    const fakeLayer = new paper.Layer()
-    fakeLayer.name = 'broiderer-fake-test'
-
-    var path = new paper.Path()
-
-    const circle = new paper.Path.Circle({
-      center: paper.view.center,
-      radius: 100,
-      fillColor: 'red',
-    })
-    // Give the stroke a color
-    path.strokeColor = 'black' as any
-    var start = new paper.Point(100, 100)
-    // Move to start and draw a line from there
-    path.moveTo(start)
-    // Note that the plus operator on Point objects does not work
-    // in JavaScript. Instead, we need to call the add() function:
-    path.lineTo(start.add([1000, 1050]))
-
-    fakeLayer.addChild(path)
-    fakeLayer.addChild(circle)
-  }
+      importedLayer.importSVG(settings.import.initialSvg)
+      paper.project.addLayer(importedLayer)
+    }
+  }, [settings.import.initialSvg])
 
   function updateAxes(view: paper.View) {
     const axesLayer = paper.project.layers.find(
