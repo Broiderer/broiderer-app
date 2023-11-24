@@ -1,5 +1,5 @@
 {
-  "name": "pes-next",
+  "name": "broiderer-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,11 +14,23 @@
     "@types/react-dom": "18.2.7",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.10",
+    "jsdom": "^22.1.0",
     "next": "13.4.10",
+    "paper": "^0.12.17",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "sass": "^1.63.6",
+    "svgo": "^3.0.4",
     "typescript": "5.1.6"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.3"
+  },
+  "browser": {
+    "fs": false,
+    "os": false,
+    "path": false
   }
 }
