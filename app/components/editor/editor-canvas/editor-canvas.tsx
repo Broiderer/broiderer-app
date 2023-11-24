@@ -14,10 +14,9 @@ import * as paper from 'paper'
 import { EditorSettings } from '../editor'
 import EditorCursor from '../editor-cursor/editor-cursor'
 import EditorNavigation from '../editor-navigation/editor-navigation'
-import { CanvasScale, scaleToPx } from '../utils/scale'
 
 const ZOOM_FACTOR = 1.05
-export const ZOOM_BOUNDS = { min: 0.1, max: 10 }
+export const ZOOM_BOUNDS = { min: 0.1, max: 100 }
 const GRID_GAP = 50
 
 const EditorCanvas = ({
@@ -384,6 +383,7 @@ const EditorCanvas = ({
       )}
       <EditorNavigation onSettingsChange={onSettingsChange}></EditorNavigation>
       <canvas
+        data-paper-hidpi="off" //  Temporary to make sure the dpi stays at 72 while it's not variable
         className={`${styles['editor-canvas-layout']} ${
           isDragging ? styles['dragging'] : ''
         }`}
