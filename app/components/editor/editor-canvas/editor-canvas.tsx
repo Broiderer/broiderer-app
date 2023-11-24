@@ -14,6 +14,7 @@ import * as paper from 'paper'
 import { EditorSettings } from '../editor'
 import EditorCursor from '../editor-cursor/editor-cursor'
 import EditorNavigation from '../editor-navigation/editor-navigation'
+import { CanvasScale, scaleToPx } from '../utils/scale'
 
 const ZOOM_FACTOR = 1.05
 export const ZOOM_BOUNDS = { min: 0.1, max: 10 }
@@ -51,6 +52,7 @@ const EditorCanvas = ({
 
     updateAxes(paper.view)
     updateGrid(paper.view)
+    updateEmbroideryZone(paper.view)
   }, [settings.navigation.zoom, settings.navigation.center, settings.grid])
 
   useEffect(() => {
@@ -110,6 +112,48 @@ const EditorCanvas = ({
       axisY.strokeColor = new paper.Color('blue')
       axisY.style.strokeWidth = 2
       axesLayer?.addChild(axisY)
+    }
+  }
+
+  function updateEmbroideryZone(view: paper.View) {
+    const emZoneLayer = paper.project.layers.find(
+      (layer) => layer.name === 'broiderer-embroidery-zone'
+    )
+
+    const emZoneAlreadyDrawn = emZoneLayer?.hasChildren()
+
+    if (!settings.grid.displayAxes) {
+      emZoneLayer?.removeChildren()
+      return
+    }
+
+    const zoneSizeInPx = scaleToPx(
+      10,
+      CanvasScale.CENTIMETER,
+      paper.view.resolution
+    )
+
+    if (emZoneAlreadyDrawn) {
+      // If axes are already drawn, update their positions
+      const zone = emZoneLayer?.children.find(
+        (child) => child.name === 'broiderer-embroidery-zone-path'
+      ) as paper.Path
+
+      zone.segments[1].point = new paper.Point([zoneSizeInPx, 0])
+      zone.segments[2].point = new paper.Point([zoneSizeInPx, zoneSizeInPx])
+      zone.segments[3].point = new paper.Point([0, zoneSizeInPx])
+    } else {
+      // If axes are not drawn, create and add them to the gridLayer
+      const zone = new paper.Path()
+      zone.name = 'broiderer-embroidery-zone-path'
+      zone.moveTo(new paper.Point(0, 0))
+      zone.lineTo(new paper.Point(zoneSizeInPx, 0))
+      zone.lineTo(new paper.Point(zoneSizeInPx, zoneSizeInPx))
+      zone.lineTo(new paper.Point(0, zoneSizeInPx))
+      zone.closePath()
+      zone.strokeColor = new paper.Color('red')
+      zone.style.strokeWidth = 2
+      emZoneLayer?.addChild(zone)
     }
   }
 
@@ -287,6 +331,7 @@ const EditorCanvas = ({
 
       updateAxes(paper.view)
       updateGrid(paper.view)
+      updateEmbroideryZone(paper.view)
     }
   }
 
