@@ -5,6 +5,7 @@ import * as paper from 'paper'
 import styles from './editro.module.scss'
 import EditorSidebar from './editor-sidebar/editor-sidebar'
 import EditorCanvas from './editor-canvas/editor-canvas'
+import { CanvasScale, scaleToPx } from './utils/scale'
 
 export type EditorSettings = {
   navigation: {
@@ -15,6 +16,8 @@ export type EditorSettings = {
     displayAxes: boolean
     displayGrid: boolean
     displayPointerPosition: boolean
+    displayEmbroideryZone: boolean
+    embroideryZoneSize: number
   }
   import: {
     initialSvg: string | null
@@ -23,9 +26,17 @@ export type EditorSettings = {
 
 const ZOOM_BOUNDS = { min: 0.5, max: 5 }
 
+export const DEFAULT_DPI = 72
+
 const DEFAULT_SETTINGS: EditorSettings = {
   navigation: { zoom: ZOOM_BOUNDS.min, center: [0, 0] },
-  grid: { displayAxes: true, displayPointerPosition: true, displayGrid: true },
+  grid: {
+    displayAxes: true,
+    displayPointerPosition: true,
+    displayGrid: true,
+    displayEmbroideryZone: true,
+    embroideryZoneSize: scaleToPx(10, CanvasScale.CM, DEFAULT_DPI),
+  },
   import: { initialSvg: null },
 }
 

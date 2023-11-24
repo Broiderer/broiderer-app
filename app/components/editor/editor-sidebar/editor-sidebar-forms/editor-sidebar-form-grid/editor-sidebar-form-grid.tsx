@@ -1,5 +1,7 @@
 import { ChangeEvent, useState } from 'react'
 import { EditorSettings } from '../../../editor'
+import SizePicker from '@/app/components/form/size-picker/size-picker'
+import { CanvasScale } from '../../../utils/scale'
 
 export default function EditorSidebarFormGrid({
   gridSettings,
@@ -29,6 +31,20 @@ export default function EditorSidebarFormGrid({
     })
   }
 
+  function embroideryZoneDisplayedChangeHandler(e: ChangeEvent) {
+    updateGridSettings({
+      ...gridSettings,
+      displayEmbroideryZone: !gridSettings.displayEmbroideryZone,
+    })
+  }
+
+  function embroideryScaleChangeHandler(value: number) {
+    updateGridSettings({
+      ...gridSettings,
+      embroideryZoneSize: value,
+    })
+  }
+
   return (
     <form>
       <div>
@@ -54,11 +70,30 @@ export default function EditorSidebarFormGrid({
       <div>
         <input
           type="checkbox"
+          id="embroideryZoneDisplay"
+          checked={gridSettings.displayEmbroideryZone}
+          onChange={embroideryZoneDisplayedChangeHandler}
+        ></input>
+        <label htmlFor="embroideryZoneDisplay">Display embroidery zone</label>
+      </div>
+
+      <div>
+        <input
+          type="checkbox"
           id="pointerPositionDisplay"
           checked={gridSettings.displayPointerPosition}
           onChange={pointerPositionDisplayedChangeHandler}
         ></input>
         <label htmlFor="pointerPositionDisplay">Display pointer position</label>
+      </div>
+
+      <div>
+        <SizePicker
+          valueName="Embroidery zone size"
+          value={gridSettings.embroideryZoneSize}
+          scale={CanvasScale.CM}
+          onValueChanges={embroideryScaleChangeHandler}
+        ></SizePicker>
       </div>
     </form>
   )

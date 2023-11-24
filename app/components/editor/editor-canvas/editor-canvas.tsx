@@ -42,6 +42,9 @@ const EditorCanvas = ({
       const axesLayer = new paper.Layer()
       axesLayer.name = 'broiderer-axes'
 
+      const embroideryZoneLayer = new paper.Layer()
+      embroideryZoneLayer.name = 'broiderer-embroidery-zone'
+
       setViewLoaded(true)
     }
   }, [])
@@ -122,16 +125,12 @@ const EditorCanvas = ({
 
     const emZoneAlreadyDrawn = emZoneLayer?.hasChildren()
 
-    if (!settings.grid.displayAxes) {
+    if (!settings.grid.displayEmbroideryZone) {
       emZoneLayer?.removeChildren()
       return
     }
 
-    const zoneSizeInPx = scaleToPx(
-      10,
-      CanvasScale.CENTIMETER,
-      paper.view.resolution
-    )
+    const zoneSizeInPx = settings.grid.embroideryZoneSize
 
     if (emZoneAlreadyDrawn) {
       // If axes are already drawn, update their positions
