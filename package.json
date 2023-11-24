@@ -21,10 +21,16 @@
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "sass": "^1.63.6",
+    "svgo": "^3.0.4",
     "typescript": "5.1.6"
   },
   "devDependencies": {
     "eslint-config-prettier": "^9.0.0",
     "prettier": "^3.0.3"
+  },
+  "browser": {
+    "fs": false,
+    "os": false,
+    "path": false
   }
 }
