@@ -7,6 +7,7 @@ import {
   SetStateAction,
   Dispatch,
   KeyboardEvent,
+  useMemo,
 } from 'react'
 import styles from './editor-canvas.module.scss'
 import { Point } from 'paper/dist/paper-core'
@@ -14,6 +15,8 @@ import * as paper from 'paper'
 import { EditorSettings } from '../editor'
 import EditorCursor from '../editor-cursor/editor-cursor'
 import EditorNavigation from '../editor-navigation/editor-navigation'
+import { getStiches } from '../../test-editor-2/utils/fillStitches3'
+import getPathChildren from './utils/getPathChildren'
 
 const ZOOM_FACTOR = 1.05
 export const ZOOM_BOUNDS = { min: 0.1, max: 100 }
@@ -44,6 +47,9 @@ const EditorCanvas = ({
       const embroideryZoneLayer = new paper.Layer()
       embroideryZoneLayer.name = 'broiderer-embroidery-zone'
 
+      const testLayer = new paper.Layer()
+      testLayer.name = 'broiderer-test-stitch'
+
       setViewLoaded(true)
     }
   }, [])
@@ -54,7 +60,7 @@ const EditorCanvas = ({
 
     updateAxes(paper.view)
     updateGrid(paper.view)
-    updateEmbroideryZone(paper.view)
+    updateEmbroideryZone()
   }, [settings.navigation.zoom, settings.navigation.center, settings.grid])
 
   useEffect(() => {
@@ -65,11 +71,44 @@ const EditorCanvas = ({
 
       const importedLayer = new paper.Layer()
       importedLayer.name = 'broiderer-import'
+      importedLayer.opacity = 0
 
       importedLayer.importSVG(settings.import.initialSvg)
       paper.project.addLayer(importedLayer)
+
+      updateEmbroideryLayers()
     }
   }, [settings.import.initialSvg])
+
+  function updateEmbroideryLayers() {
+    const importLayer = paper.project.layers.find(
+      (layer) => layer.name === 'broiderer-import'
+    )
+
+    const testStitchLayer = paper.project.layers.find(
+      (layer) => layer.name === 'broiderer-test-stitch'
+    )
+
+    if (!testStitchLayer || !importLayer) {
+      return
+    }
+
+    testStitchLayer.removeChildren()
+
+    const pathChildren = getPathChildren(importLayer)
+
+    for (const pathChild of pathChildren) {
+      const newPathPoints = getStiches(pathChild, 2)
+
+      const path = new paper.Path()
+
+      for (const stitch of newPathPoints) {
+        path.add(new paper.Segment(new paper.Point([stitch.x, stitch.y])))
+      }
+      path.strokeColor = pathChild.fillColor
+      testStitchLayer.addChild(path)
+    }
+  }
 
   function updateAxes(view: paper.View) {
     const axesLayer = paper.project.layers.find(
@@ -117,7 +156,7 @@ const EditorCanvas = ({
     }
   }
 
-  function updateEmbroideryZone(view: paper.View) {
+  function updateEmbroideryZone() {
     const emZoneLayer = paper.project.layers.find(
       (layer) => layer.name === 'broiderer-embroidery-zone'
     )
@@ -304,19 +343,23 @@ const EditorCanvas = ({
   }
 
   function mouseUpHandler(e: MouseEvent<HTMLCanvasElement>) {
-    onSettingsChange((settings) => {
-      settings.navigation.center = [paper.view.center.x, paper.view.center.y]
-      return { ...settings }
-    })
-    setIsDragging(false)
+    if (isDragging) {
+      onSettingsChange((settings) => {
+        settings.navigation.center = [paper.view.center.x, paper.view.center.y]
+        return { ...settings }
+      })
+      setIsDragging(false)
+    }
   }
 
   function mouseOutHandler(e: MouseEvent<HTMLCanvasElement>) {
-    onSettingsChange((settings) => {
-      settings.navigation.center = [paper.view.center.x, paper.view.center.y]
-      return { ...settings }
-    })
-    setIsDragging(false)
+    if (isDragging) {
+      onSettingsChange((settings) => {
+        settings.navigation.center = [paper.view.center.x, paper.view.center.y]
+        return { ...settings }
+      })
+      setIsDragging(false)
+    }
   }
 
   function mouseMoveHandler(e: MouseEvent<HTMLCanvasElement>) {
@@ -329,7 +372,7 @@ const EditorCanvas = ({
 
       updateAxes(paper.view)
       updateGrid(paper.view)
-      updateEmbroideryZone(paper.view)
+      updateEmbroideryZone()
     }
   }
 
@@ -372,6 +415,8 @@ const EditorCanvas = ({
     })
   }
 
+  console.log('render')
+
   return (
     <div className={styles['editor-canvas']}>
       {canvasRef && viewLoaded && settings.grid.displayPointerPosition && (
@@ -383,7 +428,6 @@ const EditorCanvas = ({
       )}
       <EditorNavigation onSettingsChange={onSettingsChange}></EditorNavigation>
       <canvas
-        data-paper-hidpi="off" //  Temporary to make sure the dpi stays at 72 while it's not variable
         className={`${styles['editor-canvas-layout']} ${
           isDragging ? styles['dragging'] : ''
         }`}

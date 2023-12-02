@@ -23,7 +23,7 @@ export default function SizePicker({
   onValueChanges,
 }: SizePickerProps) {
   const [scale, setScale] = useState(initialScale)
-  console.log(value)
+
   function onValueChangeHandler(e: ChangeEvent) {
     onValueChanges(
       scaleToPx(
