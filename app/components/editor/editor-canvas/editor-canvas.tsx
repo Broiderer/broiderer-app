@@ -102,7 +102,14 @@ const EditorCanvas = ({
 
     testStitchLayer.removeChildren()
 
-    const pathChildren = getPathChildren(importLayer, true)
+    const pathChildren = getPathChildren(importLayer, true).map(
+      (path, i, self) => {
+        for (let j = 0; j < i; j++) {
+          path = path.subtract(self[j], { insert: false }) as paper.Path
+        }
+        return path
+      }
+    )
 
     setImportedPaths(pathChildren.map((path) => path.clone({ insert: false })))
 
