@@ -1,10 +1,10 @@
 .editor-cursor {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 10rem;
   background-color: #ffffffcc;
   border-bottom: 1px solid blue;
-  border-left: 1px solid blue;
+  border-right: 1px solid blue;
   padding: 5px;
   min-width: 70px;
   z-index: 1;

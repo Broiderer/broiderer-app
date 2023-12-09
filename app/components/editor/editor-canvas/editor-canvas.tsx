@@ -16,7 +16,8 @@ import { EditorSettings } from '../editor'
 import EditorCursor from '../editor-cursor/editor-cursor'
 import EditorNavigation from '../editor-navigation/editor-navigation'
 import { getStiches } from '../../test-editor-2/utils/fillStitches3'
-import getPathChildren from './utils/getPathChildren'
+import getPathChildren, { setPathsInitialIds } from './utils/getPathChildren'
+import EditorPaths from '../editor-paths/editor-paths'
 
 const ZOOM_FACTOR = 1.05
 export const ZOOM_BOUNDS = { min: 0.1, max: 100 }
@@ -32,11 +33,14 @@ const EditorCanvas = ({
   const canvasRef = createRef<HTMLCanvasElement>()
   const [isDragging, setIsDragging] = useState<boolean>(false)
   const [viewLoaded, setViewLoaded] = useState<boolean>(false)
+  const [importedPaths, setImportedPaths] = useState<paper.Path[]>([])
 
   useEffect(() => {
     if (canvasRef?.current) {
       paper.install(document)
       paper.setup(canvasRef.current)
+
+      paper.project.currentStyle.strokeWidth = 0.5
 
       const gridLayer = new paper.Layer()
       gridLayer.name = 'broiderer-grid'
@@ -74,6 +78,9 @@ const EditorCanvas = ({
       importedLayer.opacity = 0
 
       importedLayer.importSVG(settings.import.initialSvg)
+
+      setPathsInitialIds(importedLayer)
+
       paper.project.addLayer(importedLayer)
 
       updateEmbroideryLayers()
@@ -95,18 +102,29 @@ const EditorCanvas = ({
 
     testStitchLayer.removeChildren()
 
-    const pathChildren = getPathChildren(importLayer)
+    const pathChildren = getPathChildren(importLayer, true)
+
+    setImportedPaths(pathChildren.map((path) => path.clone({ insert: false })))
+
+    const pathChildrenStitched = []
 
     for (const pathChild of pathChildren) {
-      const newPathPoints = getStiches(pathChild, 2)
+      if (pathChild.data['broiderer-removed']) {
+        continue
+      }
+      const newPathPoints = getStiches(pathChild, 1)
 
       const path = new paper.Path()
 
       for (const stitch of newPathPoints) {
         path.add(new paper.Segment(new paper.Point([stitch.x, stitch.y])))
       }
+
       path.strokeColor = pathChild.fillColor
+      path.data = pathChild.data
       testStitchLayer.addChild(path)
+
+      pathChildrenStitched.push(path.clone({ insert: false }))
     }
   }
 
@@ -415,6 +433,43 @@ const EditorCanvas = ({
     })
   }
 
+  function onPathChangeHandler(
+    oldPathId: number,
+    name: 'fillColor',
+    value: paper.Color
+  ) {
+    const importLayer = paper.project.layers.find(
+      (layer) => layer.name === 'broiderer-import'
+    )
+    if (!importLayer) {
+      return
+    }
+    const matchingChild = getPathChildren(importLayer, false).find(
+      (child) => child.data['broiderer-import-id'] === oldPathId
+    )
+    if (matchingChild) {
+      matchingChild[name] = value
+    }
+    updateEmbroideryLayers()
+  }
+
+  function onToggleRemovePathHandler(pathImportId: number) {
+    const importLayer = paper.project.layers.find(
+      (layer) => layer.name === 'broiderer-import'
+    )
+    if (!importLayer) {
+      return
+    }
+    const matchingChild = getPathChildren(importLayer, false).find(
+      (child) => child.data['broiderer-import-id'] === pathImportId
+    )
+    if (matchingChild) {
+      matchingChild.data['broiderer-removed'] =
+        !matchingChild.data['broiderer-removed']
+    }
+    updateEmbroideryLayers()
+  }
+
   console.log('render')
 
   return (
@@ -427,6 +482,13 @@ const EditorCanvas = ({
         ></EditorCursor>
       )}
       <EditorNavigation onSettingsChange={onSettingsChange}></EditorNavigation>
+      {importedPaths.length > 0 && (
+        <EditorPaths
+          paths={importedPaths}
+          updatePath={onPathChangeHandler}
+          toggleRemovePath={onToggleRemovePathHandler}
+        ></EditorPaths>
+      )}
       <canvas
         className={`${styles['editor-canvas-layout']} ${
           isDragging ? styles['dragging'] : ''

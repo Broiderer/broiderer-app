@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState } from 'react'
+import { PropsWithChildren, useEffect, useState } from 'react'
 import styles from './editor-sidebar-section.module.scss'
 
 type EditorSidebarSectionProps = {

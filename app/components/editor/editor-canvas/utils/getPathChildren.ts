@@ -1,15 +1,27 @@
-export default function getPathChildren(node: paper.Item): paper.Path[] {
+export default function getPathChildren(node: paper.Item, copyPaths: boolean = false): paper.Path[] {
     if (isPathItem(node)) {
-        const newNode = node.clone({insert: false, deep: false})
+        let newNode = node
+        if (copyPaths) {
+            newNode = node.clone({insert: false, deep: false})
+            newNode.data['broiderer-import-id'] = node.id            
+        }
+
         return [
             newNode,
-            ...(node.children || []).map(getPathChildren).flat()
+            ...(node.children || []).map(child => getPathChildren(child, copyPaths)).flat()
         ]
     }
 
-    return (node.children || []).map(getPathChildren).flat()
+    return (node.children || []).map(child => getPathChildren(child, copyPaths)).flat()
 }
 
 function isPathItem(item: paper.Item): item is paper.Path {
     return Boolean((<paper.Path>item)?.pathData)
+}
+
+export function setPathsInitialIds(item: paper.Item): void {
+    if (isPathItem(item)) {
+        item.data['broiderer-import-id'] = item.id
+    }
+   (item.children || []).map(setPathsInitialIds)
 }
