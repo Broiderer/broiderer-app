@@ -22,6 +22,7 @@ import EditorPaths from '../editor-paths/editor-paths'
 const ZOOM_FACTOR = 1.05
 export const ZOOM_BOUNDS = { min: 0.1, max: 100 }
 const GRID_GAP = 50
+const ADDITIONAL_STITCHES = { head: 3, tail: 3 }
 
 const EditorCanvas = ({
   settings,
@@ -120,6 +121,15 @@ const EditorCanvas = ({
         continue
       }
       const newPathPoints = getStiches(pathChild, 1)
+
+      const firstPoint = newPathPoints[0]
+      for (let i = 0; i < ADDITIONAL_STITCHES.head; i++) {
+        newPathPoints.unshift(firstPoint)
+      }
+      const lastPoint = newPathPoints[newPathPoints.length - 1]
+      for (let i = 0; i < ADDITIONAL_STITCHES.tail; i++) {
+        newPathPoints.push(lastPoint)
+      }
 
       const path = new paper.Path()
 
