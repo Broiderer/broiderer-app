@@ -113,14 +113,33 @@ const EditorCanvas = ({
     )
 
     setImportedPaths(pathChildren.map((path) => path.clone({ insert: false })))
-
     const pathChildrenStitched = []
-
+    let i = 0
     for (const pathChild of pathChildren) {
       if (pathChild.data['broiderer-removed']) {
         continue
       }
-      const newPathPoints = getStiches(pathChild, 1)
+      console.log(pathChild)
+      const newPathPoints = getStiches(
+        pathChild,
+        20,
+        { type: 'linear', gap: 3, angle: Math.PI / 6 }
+        /* i === 0
+          ? { type: 'linear', gap: 1, angle: Math.PI / 6 }
+          : {
+              type: 'along',
+              path: new paper.Path(
+                'M 73.673 54.756 L 143.814 55.519 C 157.984 55.519 155.2473 70.3 155.371 77.95 L 155.197 132.639 C 156.591 150.061 147.763 155.869 126.857 154.939 L 79.934 154.01 C 53.221 153.313 54.898 137.46 54.847 128.69 L 54.382 70.85 C 53.453 53.196 60.886 55.519 73.5 54.583'
+              ),
+              gap: 1,
+              offset: 60,
+            } */
+      )
+      i++
+
+      if (newPathPoints.length === 0) {
+        break
+      }
 
       const firstPoint = newPathPoints[0]
       for (let i = 0; i < ADDITIONAL_STITCHES.head; i++) {

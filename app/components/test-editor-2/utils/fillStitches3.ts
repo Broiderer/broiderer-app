@@ -2,35 +2,40 @@ import paper from "paper";
 
 export type Position = {x: number, y: number};
 type Stitch = Position & {isSkip?: boolean};
-type LineStitches = {[key: number]: Stitch[]}
+type LineStitches = {[key: string]: Stitch[]}
+type Filling = {type: 'linear', angle: number, gap: number} | {type: 'radial', angle: number, around: {x: number, y: number}} | {type: 'along', path: paper.Path, gap: number, offset: number}
 
-export const getStiches = (path: paper.Path, gap: number) => {
-
+export const getStiches = (path: paper.Path, innerGap: number, filling: Filling = {type: 'linear', angle: 0, gap: 2}) => {
     const pointsPerLines: LineStitches = {}
 
-    let gridPathData = ``
-    const bounds = path.bounds
-    for (let i = 0; i <= bounds.width; i += gap) {
-        gridPathData += `M${bounds.x + i} ${bounds.y} L${bounds.x + i} ${bounds.y + bounds.height}`
-    }
-    const gridPath = new paper.CompoundPath(gridPathData)
+    const bounds = paper.project.layers.find(layer => layer.name === 'broiderer-embroidery-zone')?.bounds || path.bounds
 
-    const intersections = gridPath.getIntersections(path)
-    for (const intersectionPoint of intersections) {
-        pointsPerLines[intersectionPoint.point.x] = (pointsPerLines[intersectionPoint.point.x] || []).concat(intersectionPoint.point)
+    let gridLinePaths = []
+    
+    switch (filling.type) {
+        case 'linear': gridLinePaths = getParallelsForAngle(filling.angle, bounds, filling.gap); break;
+        case 'radial': gridLinePaths =  getRadialLines(filling.angle, filling.around, bounds, path); break;
+        case 'along': gridLinePaths =  getLinesAlongPath(filling.path, filling.gap, bounds, filling.offset); break;
     }
 
-    Object.keys(pointsPerLines).forEach((key, i) => {
-        const keyTmp = key as any as keyof LineStitches;
-        pointsPerLines[keyTmp].sort((pointA, pointB) => pointA.y - pointB.y)
+    gridLinePaths.forEach(linePath => {
+        const int = linePath.getIntersections(path)
+        if (int.length > 0) {
+            const roundedInters = int.map(inter => ({x: Number(inter.point.x.toFixed(2)), y: Number(inter.point.y.toFixed(2))}))
+            const uniqueInters = roundedInters.filter((inter, i, self) => self.map(pos => `${pos.x}:${pos.y}`).indexOf(`${inter.x}:${inter.y}`) === i)
+            pointsPerLines[`${int[0].point.x}:${int[0].point.y}`] = uniqueInters
+        }
+    })
+
+    Object.keys(pointsPerLines).forEach(key => {
+        pointsPerLines[key].sort((pointA, pointB) => pointA.y - pointB.y)
     })
 
     const maxLevelIndex = Math.max(...Object.values(pointsPerLines).map(pts => pts.length))
     let stitchesInOrder: Stitch[] = [];
     let levelIndex = 0;
     while (levelIndex < maxLevelIndex) {
-        const keys = Object.keys(pointsPerLines).map(Number)
-        keys.sort((keyA, keyB) => keyA - keyB)
+        const keys = Object.keys(pointsPerLines)
 
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
@@ -40,13 +45,35 @@ export const getStiches = (path: paper.Path, gap: number) => {
             if (points.length > 0 && (!nextKey || pointsPerLines[nextKey].length !== pointsPerLines[key].length)) {
                 points[points.length - 1].isSkip = true
             }
-            stitchesInOrder = stitchesInOrder.concat(points);
+
+            const filledPoints: Stitch[] = points.map((point, i, self) => {
+                if (point.isSkip || (i === self.length - 1)) {
+                    return point
+                }
+                return [point, ...getStitchesInBetween(point, self[i + 1], innerGap, false)]
+            }).flat()
+            stitchesInOrder = stitchesInOrder.concat(filledPoints);
         }
 
         levelIndex += 2;
     }
 
-    const skipSplits: Stitch[][] = [];
+    const simplifiedStitches: Stitch[] = []
+    let lastStitchedIndex = 1
+    stitchesInOrder.forEach((stitch, i, self) => {
+        if (simplifiedStitches.length === 0) {
+            simplifiedStitches.push(stitch)
+        }
+        if (distance(stitch, self[lastStitchedIndex]) < 2) {
+            return
+        }
+        simplifiedStitches.push(stitch)
+        lastStitchedIndex = i
+    })
+
+    return stitchesInOrder
+
+ /*    const skipSplits: Stitch[][] = [];
     let prevStitchIndex = 0;
     for (let i = 0; i < stitchesInOrder.length; i++) {
         if (stitchesInOrder[i].isSkip || i === stitchesInOrder.length - 1) {
@@ -54,6 +81,8 @@ export const getStiches = (path: paper.Path, gap: number) => {
             prevStitchIndex = i;
         }
     }
+
+    console.log(skipSplits)
 
     const splitsTmp = skipSplits.concat()
     const reorderedSkips = [];
@@ -67,8 +96,7 @@ export const getStiches = (path: paper.Path, gap: number) => {
         reorderedSkips.push(splitsTmp[closestSplitIndex])
         splitsTmp.splice(closestSplitIndex, 1)
     }
-
-    return reorderedSkips.flat().map((point, i, self) => (point.isSkip || i === self.length - 1) ? point : [point, ...getStitchesInBetween(point, self[i + 1], gap, false)]).flat();
+    return reorderedSkips.flat().map((point, i, self) => (point.isSkip || i === self.length - 1) ? point : [point, ...getStitchesInBetween(point, self[i + 1], gap, false)]).flat(); */
 }
 
 function getClosestSplitIndex(split: Stitch[], splits: Stitch[][]): number {
@@ -124,4 +152,70 @@ const getStitchesInBetween = (stitchA: Stitch, stitchB: Stitch, gap: number, ran
         }
         return inbetweenStitches
     }
+}
+
+function getParallelsForAngle(angle: number, bounds: paper.Layer['bounds'], gap: number) {
+    const parallels = []
+    const offsetForDeg = Math.tan(angle) * bounds.height
+    const guideLine = new paper.Path(`M${bounds.x} ${bounds.y} L${bounds.x + offsetForDeg} ${bounds.y + bounds.height}`)
+
+    if (angle >= 0 && angle < Math.PI / 4) {
+        for (let i = -Math.round(bounds.width / gap); i < 2 * bounds.width / gap; i++) {
+            const parallel = guideLine.clone({insert: false})
+            parallel.translate(new paper.Point([gap * i, 0]))
+
+            if (bounds.intersects(parallel.bounds)) {
+                parallels.push(parallel.clone({insert: false}))   
+            }
+        }
+    }
+
+    if (angle >= Math.PI / 4 && angle <= Math.PI / 2) {
+        for (let i = -Math.round(bounds.height / gap); i < 2 * bounds.height / gap; i++) {
+            const parallel = guideLine.clone({insert: false})
+            parallel.translate(new paper.Point([0, gap * i]))
+
+            if (bounds.intersects(parallel.bounds)) {
+                parallels.push(parallel.clone({insert: false}))
+            }
+        }
+    }
+
+    return parallels
+}
+
+function getRadialLines(angle: number, around: {x: number, y: number}, bounds: paper.Layer['bounds'], path: paper.Path): paper.Path[] {
+    const rotatedLines = []
+    const initial = new paper.Path(`M${around.x} ${around.y} L${around.x + (bounds.width * Math.sqrt(2))} ${around.y}`)
+
+    for (let i = 0; i < Math.PI; i+= angle) {
+        const rotatedLine = initial.clone({insert: false})
+        rotatedLine.rotate(i * 360 / (2 * Math.PI), around)
+        const symetry = rotatedLine.clone({insert: false})
+        symetry.rotate(180, around)
+        rotatedLine.join(symetry)
+        if (path.bounds.intersects(rotatedLine.bounds)) {
+            rotatedLines.push(rotatedLine)
+        }
+    }
+    
+    return rotatedLines
+}
+
+function getLinesAlongPath(path: paper.Path, gap: number, bounds: paper.Layer['bounds'], offset: number): paper.Path[] {
+    const pathLength = path.length
+
+    const lines: paper.Path[] = []
+    for (let i = 0; i < pathLength; i += gap) {
+        const normal = path.getNormalAt(i)
+        const line = new paper.Path([path.getPointAt(i), path.getPointAt(i).add(normal.multiply(2 * offset))])
+        line.translate(path.getNormalAt(i).subtract(normal.multiply(offset)))
+        lines.push(line)
+    }
+
+    /* lines.forEach(line => {
+        line.strokeColor = new paper.Color('green')
+        paper.project.layers[0].addChild(line)
+    }) */
+    return lines
 }
