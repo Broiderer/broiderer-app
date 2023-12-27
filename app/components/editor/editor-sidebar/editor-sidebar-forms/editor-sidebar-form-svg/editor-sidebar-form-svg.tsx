@@ -3,6 +3,7 @@ import { EditorSettings } from '../../../editor'
 import * as svgo from 'svgo'
 import * as paper from 'paper'
 import downloadFile from '../../../utils/download'
+import { replaceUses } from '../../../editor-canvas/utils/replaceUses'
 
 export default function EditorSidebarFromSvg({
   updateImportSettings,
@@ -23,7 +24,7 @@ export default function EditorSidebarFromSvg({
           const optimizedData = svgo.optimize(svgContent, {
             js2svg: { indent: 2, pretty: true },
             plugins: [
-              /* 'cleanupAttrs',
+              'cleanupAttrs',
               'cleanupEnableBackground',
               'cleanupIds',
               { name: 'cleanupListOfValues', params: { convertToPx: true } },
@@ -32,8 +33,8 @@ export default function EditorSidebarFromSvg({
               {
                 name: 'convertColors',
                 params: { names2hex: true, rgb2hex: true },
-              }, */
-              /* {
+              },
+              {
                 name: 'convertPathData',
                 params: {
                   applyTransforms: true,
@@ -41,14 +42,14 @@ export default function EditorSidebarFromSvg({
                   convertToZ: true,
                   removeUseless: true,
                 },
-              }, */
+              },
               { name: 'convertShapeToPath', params: { convertArcs: true } },
               'convertStyleToAttrs',
-              'inlineStyles',
+              'convertTransform',
               'removeComments',
               'removeDesc',
               'removeDoctype',
-              'removeDimensions',
+              'removeViewBox',
               'removeEditorsNSData',
               'removeEmptyContainers',
               'removeEmptyText',
@@ -70,8 +71,10 @@ export default function EditorSidebarFromSvg({
             ],
           }).data
 
+          const usesReplacedData = replaceUses(optimizedData)
+
           updateImportSettings({
-            initialSvg: optimizedData,
+            initialSvg: usesReplacedData,
           })
         }
       }
@@ -91,7 +94,7 @@ export default function EditorSidebarFromSvg({
     testStitchLayer.children = testStitchLayer.children.filter(
       (child) => child.data['broiderer-import-id']
     )
-    const svgStr = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500" height="500">${
+    const svgStr = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500px" height="500px">${
       testStitchLayer.exportSVG({
         bounds: 'content',
         asString: true,

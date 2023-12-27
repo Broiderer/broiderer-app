@@ -7,7 +7,6 @@ import {
   SetStateAction,
   Dispatch,
   KeyboardEvent,
-  useMemo,
 } from 'react'
 import styles from './editor-canvas.module.scss'
 import { Point } from 'paper/dist/paper-core'
@@ -34,7 +33,9 @@ const EditorCanvas = ({
   const canvasRef = createRef<HTMLCanvasElement>()
   const [isDragging, setIsDragging] = useState<boolean>(false)
   const [viewLoaded, setViewLoaded] = useState<boolean>(false)
-  const [importedPaths, setImportedPaths] = useState<paper.Path[]>([])
+  const [importedPaths, setImportedPaths] = useState<
+    (paper.Path | paper.CompoundPath)[]
+  >([])
 
   useEffect(() => {
     if (canvasRef?.current) {
@@ -103,27 +104,29 @@ const EditorCanvas = ({
 
     testStitchLayer.removeChildren()
 
-    const pathChildren = getPathChildren(importLayer, true).map(
-      (path, i, self) => {
+    const pathChildren = getPathChildren(importLayer, true)
+      .reverse()
+      .filter((path) => !path.data['broiderer-removed'] && path.pathData)
+      .map((path, i, self) => {
         for (let j = 0; j < i; j++) {
           path = path.subtract(self[j], { insert: false }) as paper.Path
         }
         return path
-      }
-    )
+      })
+
+    for (const pathChild of pathChildren) {
+      pathChild.closePath()
+    }
 
     setImportedPaths(pathChildren.map((path) => path.clone({ insert: false })))
+
     const pathChildrenStitched = []
     let i = 0
     for (const pathChild of pathChildren) {
-      if (pathChild.data['broiderer-removed']) {
-        continue
-      }
-      console.log(pathChild)
       const newPathPoints = getStiches(
         pathChild,
         20,
-        { type: 'linear', gap: 3, angle: Math.PI / 6 }
+        { type: 'linear', gap: 1, angle: Math.PI / 6 }
         /* i === 0
           ? { type: 'linear', gap: 1, angle: Math.PI / 6 }
           : {

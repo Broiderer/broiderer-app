@@ -5,7 +5,7 @@ type Stitch = Position & {isSkip?: boolean};
 type LineStitches = {[key: string]: Stitch[]}
 type Filling = {type: 'linear', angle: number, gap: number} | {type: 'radial', angle: number, around: {x: number, y: number}} | {type: 'along', path: paper.Path, gap: number, offset: number}
 
-export const getStiches = (path: paper.Path, innerGap: number, filling: Filling = {type: 'linear', angle: 0, gap: 2}) => {
+export const getStiches = (path: paper.Path | paper.CompoundPath, innerGap: number, filling: Filling = {type: 'linear', angle: 0, gap: 2}) => {
     const pointsPerLines: LineStitches = {}
 
     const bounds = paper.project.layers.find(layer => layer.name === 'broiderer-embroidery-zone')?.bounds || path.bounds
@@ -184,7 +184,7 @@ function getParallelsForAngle(angle: number, bounds: paper.Layer['bounds'], gap:
     return parallels
 }
 
-function getRadialLines(angle: number, around: {x: number, y: number}, bounds: paper.Layer['bounds'], path: paper.Path): paper.Path[] {
+function getRadialLines(angle: number, around: {x: number, y: number}, bounds: paper.Layer['bounds'], path: paper.Path | paper.CompoundPath): paper.Path[] {
     const rotatedLines = []
     const initial = new paper.Path(`M${around.x} ${around.y} L${around.x + (bounds.width * Math.sqrt(2))} ${around.y}`)
 

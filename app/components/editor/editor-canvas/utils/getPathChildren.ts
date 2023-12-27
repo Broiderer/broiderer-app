@@ -1,9 +1,9 @@
-export default function getPathChildren(node: paper.Item, copyPaths: boolean = false): paper.Path[] {
+export default function getPathChildren(node: paper.Item, copyPaths: boolean = false): (paper.Path | paper.CompoundPath)[] {
     if (isPathItem(node)) {
         let newNode = node
         if (copyPaths) {
             newNode = node.clone({insert: false, deep: false})
-            newNode.data['broiderer-import-id'] = node.id            
+            newNode.data['broiderer-import-id'] = node.id
         }
 
         return [
@@ -15,7 +15,7 @@ export default function getPathChildren(node: paper.Item, copyPaths: boolean = f
     return (node.children || []).map(child => getPathChildren(child, copyPaths)).flat()
 }
 
-function isPathItem(item: paper.Item): item is paper.Path {
+function isPathItem(item: paper.Item): item is paper.Path | paper.CompoundPath {
     return Boolean((<paper.Path>item)?.pathData)
 }
 

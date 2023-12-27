@@ -5,7 +5,7 @@ import { ChangeEvent, useMemo } from 'react'
 import EditorSidebarSection from '../../editor-sidebar/editor-sidebar-section/editor-sidebar-section'
 
 type EditorPathProps = {
-  path: paper.Path
+  path: paper.Path | paper.CompoundPath
   updatePath: (oldPathId: number, name: 'fillColor', value: paper.Color) => void
   toggleRemovePath: (oldPathId: number) => void
 }
