@@ -54,7 +54,7 @@ export default function EditorPath({
           <input
             type="color"
             id={`color-input-${path.id}`}
-            value={path.strokeColor?.toCSS(true)}
+            value={path.fillColor?.toCSS(true)}
             onChange={colorChangeHandler}
           />
 

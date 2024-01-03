@@ -89,7 +89,7 @@ const EditorCanvas = ({
     }
   }, [settings.import.initialSvg])
 
-  function updateEmbroideryLayers() {
+  function updateEmbroideryLayers(computeStitches: boolean = true) {
     const importLayer = paper.project.layers.find(
       (layer) => layer.name === 'broiderer-import'
     )
@@ -101,8 +101,6 @@ const EditorCanvas = ({
     if (!testStitchLayer || !importLayer) {
       return
     }
-
-    testStitchLayer.removeChildren()
 
     const pathChildren = getPathChildren(importLayer, true)
       .reverse()
@@ -120,50 +118,45 @@ const EditorCanvas = ({
 
     setImportedPaths(pathChildren.map((path) => path.clone({ insert: false })))
 
-    const pathChildrenStitched = []
-    let i = 0
+    const stitchLayerSave = testStitchLayer.clone({ insert: false })
+    testStitchLayer.removeChildren()
+
     for (const pathChild of pathChildren) {
-      const newPathPoints = getStiches(
-        pathChild,
-        20,
-        { type: 'linear', gap: 1, angle: Math.PI / 6 }
-        /* i === 0
-          ? { type: 'linear', gap: 1, angle: Math.PI / 6 }
-          : {
-              type: 'along',
-              path: new paper.Path(
-                'M 73.673 54.756 L 143.814 55.519 C 157.984 55.519 155.2473 70.3 155.371 77.95 L 155.197 132.639 C 156.591 150.061 147.763 155.869 126.857 154.939 L 79.934 154.01 C 53.221 153.313 54.898 137.46 54.847 128.69 L 54.382 70.85 C 53.453 53.196 60.886 55.519 73.5 54.583'
-              ),
-              gap: 1,
-              offset: 60,
-            } */
+      let path = new paper.Path()
+      const matchingPath = getPathChildren(stitchLayerSave).find(
+        (path) =>
+          path.data['broiderer-import-id'] ===
+          pathChild.data['broiderer-import-id']
       )
-      i++
+      if (!computeStitches && matchingPath) {
+        path = matchingPath as paper.Path
+      } else {
+        const newPathPoints = getStiches(pathChild, 20, {
+          type: 'linear',
+          gap: 1,
+          angle: Math.PI / 6,
+        })
 
-      if (newPathPoints.length === 0) {
-        break
+        if (newPathPoints.length === 0) {
+          break
+        }
+
+        const firstPoint = newPathPoints[0]
+        for (let i = 0; i < ADDITIONAL_STITCHES.head; i++) {
+          newPathPoints.unshift(firstPoint)
+        }
+        const lastPoint = newPathPoints[newPathPoints.length - 1]
+        for (let i = 0; i < ADDITIONAL_STITCHES.tail; i++) {
+          newPathPoints.push(lastPoint)
+        }
+
+        for (const stitch of newPathPoints) {
+          path.add(new paper.Segment(new paper.Point([stitch.x, stitch.y])))
+        }
+        path.data = pathChild.data
       }
-
-      const firstPoint = newPathPoints[0]
-      for (let i = 0; i < ADDITIONAL_STITCHES.head; i++) {
-        newPathPoints.unshift(firstPoint)
-      }
-      const lastPoint = newPathPoints[newPathPoints.length - 1]
-      for (let i = 0; i < ADDITIONAL_STITCHES.tail; i++) {
-        newPathPoints.push(lastPoint)
-      }
-
-      const path = new paper.Path()
-
-      for (const stitch of newPathPoints) {
-        path.add(new paper.Segment(new paper.Point([stitch.x, stitch.y])))
-      }
-
       path.strokeColor = pathChild.fillColor
-      path.data = pathChild.data
       testStitchLayer.addChild(path)
-
-      pathChildrenStitched.push(path.clone({ insert: false }))
     }
   }
 
@@ -489,7 +482,7 @@ const EditorCanvas = ({
     if (matchingChild) {
       matchingChild[name] = value
     }
-    updateEmbroideryLayers()
+    updateEmbroideryLayers(false)
   }
 
   function onToggleRemovePathHandler(pathImportId: number) {
