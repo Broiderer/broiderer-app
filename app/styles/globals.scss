@@ -1,46 +1,71 @@
-@import './reset.scss';
-@import './vars.scss';
+@import "./reset.scss";
+@import "./vars.scss";
 
 .bro-title {
-    font-size: 1.8rem;
+  font-weight: 600;
+  font-size: 2.5rem;
+  line-height: 1.1;
 }
 
 .bro-emphasis {
-    color: $color-primary;
-    font-weight: 600;
+  color: $color-primary;
+  font-weight: 600;
 }
 
 .bro-muted {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .bro-link {
+  color: $grey-secondary;
+  padding: 2px;
+  border-radius: 3px;
+  cursor: pointer;
+
+  &.active {
     color: $color-primary;
-    padding: 2px;
-    border-radius: 3px;
+  }
 
-    &:hover {
-        background-color: $color-primary-trans;
-    }
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
 
-    &.active {
-        background-color: $color-primary-trans;
-    }
+  &:hover {
+    background-color: $grey-light;
+  }
 }
 
 .bro-button {
-    font-size: .875rem;
-    line-height: 1rem;
-    padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.1s linear;
+  text-decoration: none;
+  color: $grey;
+  background: none;
+  font-size: 1rem;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  line-height: 1rem;
+  font-weight: 600;
+  background-color: $grey-light;
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+
+  &:hover {
+    background-color: $grey-light-secondary;
+  }
+
+  &.bro-button-primary {
+    border: none;
     background-color: $color-primary;
-    border-radius: 0.3rem;
-    background-image: none;
-    border: 2px solid $color-primary-dark;
     color: white;
-    font-weight: 600;
-    cursor: pointer;
 
     &:hover {
-        background-color: $color-primary-dark;
+      background-color: $color-primary-dark;
     }
+  }
 }

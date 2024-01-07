@@ -1,42 +1,106 @@
+@import "../styles/vars.scss";
+
 .home {
-    min-height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: $light;
+  position: relative;
+
+  &-content {
+    padding: 0 3rem;
     display: flex;
-    flex-direction: column;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: min(10%, 5rem) auto;
+    width: 100%;
+    flex: 1;
+    position: relative;
+    z-index: 1;
 
-    .content {
-        flex: 1;
+    &-text {
+      width: 60%;
+      max-width: 600px;
+
+      h1 {
+        font-weight: 600;
+        font-size: 2.5rem;
+        line-height: 1.1;
+        margin-top: 4rem;
+      }
+
+      p {
+        margin: 2rem 0;
+        opacity: 0.7;
+        line-height: 1.5;
+      }
+
+      &-buttons {
         display: flex;
-        flex-direction: column;
-        margin: 3rem auto;
-        width: 1000px;
-        max-width: 80%;
-
-        .links {
-            display: flex;
-            margin-top: 3rem;
-            margin-bottom: 1rem;
-            gap: 2rem;
-        }
-
-        .introduction {
-            margin-bottom: 1rem;
-
-            h1 {
-                text-align: center;
-            }
-        
-            p {
-                opacity: 0.7;
-                text-align: center;
-                margin-top: 1rem;
-                line-height: 1.2;
-            }
-        }
+        align-items: center;
+        gap: 1.5rem;
+      }
     }
+
+    &-images {
+      position: relative;
+      flex: 1;
+
+      &-image1 {
+        position: absolute;
+        right: 0;
+        top: 2rem;
+        width: min(400px, 30vw);
+        height: min(400px, 30vw);
+        border: 2px solid white;
+
+        transform: perspective(75em) rotateY(-18deg);
+        box-shadow:
+          rgba(22, 31, 39, 0.42) 0px 60px 123px -25px,
+          rgba(19, 26, 32, 0.08) 0px 35px 75px -35px;
+        border-radius: 10px;
+      }
+    }
+  }
+
+  &-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+
+    &-overlay {
+      width: 50%;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      background: linear-gradient(to left, $light, transparent);
+    }
+
+    path {
+      fill: none;
+      stroke: rgba($grey, 0.05);
+    }
+  }
 }
 
-@media screen and (max-width: 800px) {
-    .links {
-        flex-direction: column;
-    }
+@media (max-width: 600px) {
+  .home-content-text {
+    width: 100%;
+  }
+
+  .home-content-images {
+    display: none;
+  }
+
+  .home-content {
+    padding: 0 1rem;
+  }
+
+  .home-content-text > h1 {
+    margin-top: 0;
+  }
 }

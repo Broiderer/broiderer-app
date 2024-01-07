@@ -1,0 +1,30 @@
+@import "../styles/vars.scss";
+
+.about {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: $light;
+  position: relative;
+
+  &-content {
+    padding: 0 3rem;
+    max-width: 700px;
+    margin: min(10%, 5rem) auto;
+    width: 100%;
+    flex: 1;
+    font-size: 1.2rem;
+    line-height: 1.2;
+
+    p {
+      margin-top: 2rem;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .about-content {
+    padding: 0 1rem;
+  }
+}
