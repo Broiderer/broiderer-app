@@ -1,0 +1,25 @@
+@import "../../../../styles/vars.scss";
+
+.sidebar-section {
+  &-button {
+    width: 100%;
+    text-align: unset;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      i {
+        display: block;
+      }
+    }
+  }
+
+  &-content {
+    margin-top: 0.5rem;
+  }
+}

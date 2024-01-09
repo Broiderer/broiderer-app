@@ -1,5 +1,5 @@
 .sidebar-container {
-  width: 10rem;
+  width: 15rem;
   background-color: white;
   border-right: 1px solid black;
   position: absolute;
@@ -7,4 +7,22 @@
   top: 0;
   height: 100%;
   z-index: 1;
+  padding: 1rem;
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &-logo-name {
+      font-size: unset;
+    }
+  }
+
+  .sidebar-sections {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 }

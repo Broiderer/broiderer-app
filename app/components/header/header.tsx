@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import logo from '../../assets/logo.jpg'
 import styles from './header.module.scss'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
+import { Logo } from '../logo/logo'
 
 export default function Header() {
   const pathname = usePathname()
@@ -17,14 +17,7 @@ export default function Header() {
 
   return (
     <header className={styles['header']}>
-      <Link className={styles['header-logo']} href="/">
-        <Image
-          src={logo}
-          alt=""
-          className={styles['header-logo-image']}
-        ></Image>
-        <div className={styles['header-logo-name']}>Broiderer</div>
-      </Link>
+      <Logo withName={true} nameClassName={styles['header-logo-name']}></Logo>
       <nav>
         <ul>
           <li>

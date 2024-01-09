@@ -3,12 +3,14 @@ import styles from './editor-sidebar-section.module.scss'
 
 type EditorSidebarSectionProps = {
   title: string
+  iconClassName?: string
   initiallyOpened?: boolean
 } & PropsWithChildren
 
 export default function EditorSidebarSection({
   children,
   title,
+  iconClassName,
   initiallyOpened,
 }: EditorSidebarSectionProps) {
   const [isOpen, setIsOpen] = useState(!!initiallyOpened)
@@ -19,8 +21,21 @@ export default function EditorSidebarSection({
 
   return (
     <div className={styles['sidebar-section']}>
-      <button type="button" onClick={toggleIsOpen}>
-        {title}
+      <button
+        className={`bro-button ${styles['sidebar-section-button']}`}
+        type="button"
+        onClick={toggleIsOpen}
+        aria-expanded={isOpen}
+      >
+        <div className={styles['sidebar-section-button-title']}>
+          {iconClassName && <i className={`bro-icon ${iconClassName}`} />}
+          {title}
+        </div>
+        <div>
+          <i
+            className={`bro-icon bro-icon-chevron-${isOpen ? 'down' : 'right'}`}
+          />
+        </div>
       </button>
       {isOpen && (
         <div className={styles['sidebar-section-content']}>{children}</div>

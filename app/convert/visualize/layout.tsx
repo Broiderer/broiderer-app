@@ -11,11 +11,9 @@ export default function VisualizeLayout({
   return (
     <>
       <main className={styles.visualize}>
-        <Header></Header>
         <div className={styles['visualize-content']}>
           <Editor></Editor>
         </div>
-        <Footer></Footer>
       </main>
     </>
   )
