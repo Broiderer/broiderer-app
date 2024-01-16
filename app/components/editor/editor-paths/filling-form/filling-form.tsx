@@ -56,8 +56,9 @@ export default function FillingForm({
             <label htmlFor="filling-gap">Gap</label>
             <input
               type="number"
+              step=".1"
               value={filling.gap}
-              min={1}
+              min={0.5}
               id="filling-gap"
               onChange={(e) => updateFillingInputHandler('gap', e)}
               className="bro-input"
