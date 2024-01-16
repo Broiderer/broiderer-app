@@ -10,11 +10,11 @@ export default function About() {
         <h1 className="bro-title">About</h1>
 
         <p>
-          I've owned an embroidery machine for a decade now, and achieving a
+          {`I've owned an embroidery machine for a decade now, and achieving a
           clean embroidery result in my sewing projects has always been a
           challenge. Understanding how to get the best result with the right
           fabric, thread, backing, and machine settings can be daunting,
-          especially for an amateur embroiderer.
+          especially for an amateur embroiderer.`}
         </p>
         <p>
           Even after mastering these aspects, creating a clean vector design for
