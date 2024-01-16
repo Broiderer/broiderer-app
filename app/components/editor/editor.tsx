@@ -6,6 +6,9 @@ import styles from './editro.module.scss'
 import EditorSidebar from './editor-sidebar/editor-sidebar'
 import EditorCanvas from './editor-canvas/editor-canvas'
 import { CanvasScale, scaleToPx } from './utils/scale'
+import { TooltipProvider } from '@radix-ui/react-tooltip'
+import { Filling } from '../test-editor-2/utils/fillStitches3'
+import { getDefaultFillingForType } from './editor-canvas/utils/getDefaultFillingForType'
 
 export type EditorSettings = {
   navigation: {
@@ -22,6 +25,9 @@ export type EditorSettings = {
   import: {
     initialSvg: string | null
   }
+  stitch: {
+    global: Filling
+  } & { [key: string]: Filling }
 }
 
 const ZOOM_BOUNDS = { min: 0.5, max: 5 }
@@ -32,29 +38,34 @@ const DEFAULT_SETTINGS: EditorSettings = {
   navigation: { zoom: ZOOM_BOUNDS.min, center: [0, 0] },
   grid: {
     displayAxes: true,
-    displayPointerPosition: true,
+    displayPointerPosition: false,
     displayGrid: true,
     displayEmbroideryZone: true,
     embroideryZoneSize: scaleToPx(10, CanvasScale.CM, DEFAULT_DPI),
   },
   import: { initialSvg: null },
+  stitch: {
+    global: getDefaultFillingForType('linear'),
+  },
 }
 
 export default function Editor() {
   const [settings, setSettings] = useState<EditorSettings>(DEFAULT_SETTINGS)
 
   return (
-    <div className={styles['editor-container']}>
-      <div className={styles['editor-layout']}>
-        <EditorSidebar
-          settings={settings}
-          updateSettings={setSettings}
-        ></EditorSidebar>
-        <EditorCanvas
-          settings={settings}
-          onSettingsChange={setSettings}
-        ></EditorCanvas>
+    <TooltipProvider delayDuration={0}>
+      <div className={styles['editor-container']}>
+        <div className={styles['editor-layout']}>
+          <EditorSidebar
+            settings={settings}
+            updateSettings={setSettings}
+          ></EditorSidebar>
+          <EditorCanvas
+            settings={settings}
+            onSettingsChange={setSettings}
+          ></EditorCanvas>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   )
 }

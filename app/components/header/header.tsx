@@ -46,7 +46,7 @@ export default function Header() {
               className="bro-button bro-button-primary"
               onClick={navigateToEditor}
             >
-              Start Creating
+              ✨ Start Creating
             </button>
           </li>
         </ul>

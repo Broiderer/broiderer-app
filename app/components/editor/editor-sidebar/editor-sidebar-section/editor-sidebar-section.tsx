@@ -5,6 +5,7 @@ type EditorSidebarSectionProps = {
   title: string
   iconClassName?: string
   initiallyOpened?: boolean
+  className?: string
 } & PropsWithChildren
 
 export default function EditorSidebarSection({
@@ -12,6 +13,7 @@ export default function EditorSidebarSection({
   title,
   iconClassName,
   initiallyOpened,
+  className,
 }: EditorSidebarSectionProps) {
   const [isOpen, setIsOpen] = useState(!!initiallyOpened)
 
@@ -22,7 +24,9 @@ export default function EditorSidebarSection({
   return (
     <div className={styles['sidebar-section']}>
       <button
-        className={`bro-button ${styles['sidebar-section-button']}`}
+        className={`bro-button ${styles['sidebar-section-button']} ${
+          className ? className : ''
+        }`}
         type="button"
         onClick={toggleIsOpen}
         aria-expanded={isOpen}

@@ -1,7 +1,8 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent } from 'react'
 import { EditorSettings } from '../../../editor'
 import SizePicker from '@/app/components/form/size-picker/size-picker'
 import { CanvasScale } from '../../../utils/scale'
+import styles from './editor-sidebar-form-grid.module.scss'
 
 export default function EditorSidebarFormGrid({
   gridSettings,
@@ -46,50 +47,50 @@ export default function EditorSidebarFormGrid({
   }
 
   return (
-    <form>
-      <div>
+    <form className={styles['editor-sidebar-form-grid']}>
+      <div className="bro-checkbox-control">
         <input
           type="checkbox"
           id="axesDisplay"
           checked={gridSettings.displayAxes}
           onChange={axesDisplayedChangeHandler}
         ></input>
-        <label htmlFor="axesDisplay">Display axes</label>
+        <label htmlFor="axesDisplay">X/Y axes</label>
       </div>
 
-      <div>
+      <div className="bro-checkbox-control">
         <input
           type="checkbox"
-          id="axesDisplay"
+          id="gridDisplay"
           checked={gridSettings.displayGrid}
           onChange={gridDisplayedChangeHandler}
         ></input>
-        <label htmlFor="axesDisplay">Display grid</label>
+        <label htmlFor="gridDisplay">Grid</label>
       </div>
 
-      <div>
+      <div className="bro-checkbox-control">
         <input
           type="checkbox"
           id="embroideryZoneDisplay"
           checked={gridSettings.displayEmbroideryZone}
           onChange={embroideryZoneDisplayedChangeHandler}
         ></input>
-        <label htmlFor="embroideryZoneDisplay">Display embroidery zone</label>
+        <label htmlFor="embroideryZoneDisplay">Embroidery zone</label>
       </div>
 
-      <div>
+      <div className="bro-checkbox-control">
         <input
           type="checkbox"
           id="pointerPositionDisplay"
           checked={gridSettings.displayPointerPosition}
           onChange={pointerPositionDisplayedChangeHandler}
         ></input>
-        <label htmlFor="pointerPositionDisplay">Display pointer position</label>
+        <label htmlFor="pointerPositionDisplay">Pointer position</label>
       </div>
 
-      <div>
+      <div className={styles['editor-sidebar-form-grid-size']}>
         <SizePicker
-          valueName="Embroidery zone size"
+          valueName="Zone size"
           value={gridSettings.embroideryZoneSize}
           scale={CanvasScale.CM}
           onValueChanges={embroideryScaleChangeHandler}

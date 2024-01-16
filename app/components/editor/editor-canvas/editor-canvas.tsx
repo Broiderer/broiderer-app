@@ -13,7 +13,6 @@ import { Point } from 'paper/dist/paper-core'
 import * as paper from 'paper'
 import { EditorSettings } from '../editor'
 import EditorCursor from '../editor-cursor/editor-cursor'
-import EditorNavigation from '../editor-navigation/editor-navigation'
 import { getStiches } from '../../test-editor-2/utils/fillStitches3'
 import getPathChildren, { setPathsInitialIds } from './utils/getPathChildren'
 import EditorPaths from '../editor-paths/editor-paths'
@@ -89,6 +88,10 @@ const EditorCanvas = ({
     }
   }, [settings.import.initialSvg])
 
+  useEffect(() => {
+    updateEmbroideryLayers()
+  }, [settings.stitch])
+
   function updateEmbroideryLayers(computeStitches: boolean = true) {
     const importLayer = paper.project.layers.find(
       (layer) => layer.name === 'broiderer-import'
@@ -131,11 +134,7 @@ const EditorCanvas = ({
       if (!computeStitches && matchingPath) {
         path = matchingPath as paper.Path
       } else {
-        const newPathPoints = getStiches(pathChild, 20, {
-          type: 'linear',
-          gap: 1,
-          angle: Math.PI / 6,
-        })
+        const newPathPoints = getStiches(pathChild, settings.stitch.global)
 
         if (newPathPoints.length === 0) {
           break
@@ -502,6 +501,11 @@ const EditorCanvas = ({
     updateEmbroideryLayers()
   }
 
+  function stitchSettingsChanged(stitchSettings: EditorSettings['stitch']) {
+    console.log('settings change here', stitchSettings)
+    onSettingsChange({ ...settings, stitch: stitchSettings })
+  }
+
   console.log('render')
 
   return (
@@ -513,12 +517,14 @@ const EditorCanvas = ({
           zoom={settings.navigation.zoom}
         ></EditorCursor>
       )}
-      <EditorNavigation onSettingsChange={onSettingsChange}></EditorNavigation>
-      {importedPaths.length > 0 && (
+      {/*  <EditorNavigation onSettingsChange={onSettingsChange}></EditorNavigation> */}
+      {settings.import.initialSvg && (
         <EditorPaths
           paths={importedPaths}
           updatePath={onPathChangeHandler}
           toggleRemovePath={onToggleRemovePathHandler}
+          stitchSettings={settings.stitch}
+          updateStitchSettings={stitchSettingsChanged}
         ></EditorPaths>
       )}
       <canvas

@@ -2,6 +2,7 @@ import { ChangeEvent, useState } from 'react'
 import { CanvasScale, pxToScale, scaleToPx } from '../../editor/utils/scale'
 import styles from './size-picker.module.scss'
 import { DEFAULT_DPI } from '../../editor/editor'
+import SelectOptions from '../../select/select'
 
 type SizePickerProps = {
   valueName: string
@@ -46,22 +47,16 @@ export default function SizePicker({
           max={minMaxForScale[scale][1]}
           id="size-picker-value"
           onChange={onValueChangeHandler}
+          className="bro-input"
         ></input>
       </div>
 
-      <div className={styles['size-picker-scale']}>
-        <label htmlFor="size-picker-scale">Scale</label>
-        <select
+      <div>
+        <SelectOptions
           value={scale}
-          id="size-picker-scale"
-          onChange={(e) => setScale(e.target.value as CanvasScale)}
-        >
-          {Object.values(CanvasScale).map((scale) => (
-            <option key={scale} id={scale}>
-              {scale}
-            </option>
-          ))}
-        </select>
+          options={Object.values(CanvasScale)}
+          onValueChange={(val) => setScale(val as CanvasScale)}
+        ></SelectOptions>
       </div>
     </div>
   )

@@ -1,0 +1,20 @@
+.filling-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    label {
+      white-space: nowrap;
+    }
+
+    input {
+      min-width: 0;
+      flex: 1;
+    }
+  }
+}

@@ -1,11 +1,13 @@
+@import "../../../styles/vars.scss";
+
 .editor-cursor {
   position: absolute;
-  top: 0;
-  left: 15rem;
-  background-color: #ffffffcc;
-  border-bottom: 1px solid blue;
-  border-right: 1px solid blue;
-  padding: 5px;
+  top: 10px;
+  left: calc(15rem + 20px);
+  background-color: white;
+  border: 2px solid $grey-light;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
   min-width: 70px;
   z-index: 1;
 

@@ -1,26 +1,20 @@
-import { ChangeEvent } from 'react'
 import { EditorSettings } from '../../../editor'
 import * as svgo from 'svgo'
-import * as paper from 'paper'
-import downloadFile from '../../../utils/download'
 import { replaceUses } from '../../../editor-canvas/utils/replaceUses'
+import EditorSidebarFormSvgDropzone from './editor-sidebar-form-svg-dropzone/editor-sidebar-form-svg-dropzone'
 
-export default function EditorSidebarFromSvg({
+export default function EditorSidebarFormSvg({
   updateImportSettings,
 }: {
   updateImportSettings: (settings: EditorSettings['import']) => void
 }) {
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const target = event.target as HTMLInputElement
-    const file = (target.files || [])[0]
-
+  const handleFileChange = (file: File) => {
     if (file) {
       const reader = new FileReader()
 
       reader.onload = (e) => {
         const svgContent = e.target?.result as string
         if (svgContent) {
-          console.log(svgContent)
           const optimizedData = svgo.optimize(svgContent, {
             js2svg: { indent: 2, pretty: true },
             plugins: [
@@ -83,49 +77,11 @@ export default function EditorSidebarFromSvg({
     }
   }
 
-  function exportSvgClicked() {
-    const testStitchLayer = paper.project.layers
-      .find((layer) => layer.name === 'broiderer-test-stitch')
-      ?.clone({ insert: false })
-    if (!testStitchLayer) {
-      return
-    }
-
-    testStitchLayer.children = testStitchLayer.children.filter(
-      (child) => child.data['broiderer-import-id']
-    )
-    const svgStr = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500px" height="500px">${
-      testStitchLayer.exportSVG({
-        bounds: 'content',
-        asString: true,
-      }) as string
-    }</svg>`
-    const optimizedData = svgo.optimize(svgStr, {
-      plugins: [
-        {
-          name: 'preset-default',
-          params: {
-            overrides: {
-              convertPathData: false,
-            },
-          },
-        },
-      ],
-    }).data
-    downloadFile('overlap_2.svg', optimizedData)
-  }
-
   return (
-    <form>
-      <div>
-        <input type="file" id="svgInput" onChange={handleFileChange} />
-        <label htmlFor="svgInput">Import SVG</label>
-      </div>
-      <div>
-        <button type="button" onClick={exportSvgClicked}>
-          Export SVG
-        </button>
-      </div>
-    </form>
+    <>
+      <EditorSidebarFormSvgDropzone
+        onFileInput={handleFileChange}
+      ></EditorSidebarFormSvgDropzone>
+    </>
   )
 }

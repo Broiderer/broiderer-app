@@ -1,3 +1,27 @@
+@import "../../../styles/vars.scss";
+
 .size-picker {
   display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+
+  &-value {
+    position: relative;
+    padding-top: 0.5rem;
+    flex: 1;
+
+    label {
+      display: block;
+      position: absolute;
+      top: -0.4rem;
+      left: 0;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: $grey;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
 }

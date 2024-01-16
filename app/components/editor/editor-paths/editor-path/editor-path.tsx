@@ -49,18 +49,30 @@ export default function EditorPath({
         </div>
       )}
       <form className={styles['editor-path-form']}>
-        <EditorSidebarSection initiallyOpened={false} title="Options">
-          <label htmlFor={`color-input-${path.id}`}>Color</label>
-          <input
-            type="color"
-            id={`color-input-${path.id}`}
-            value={path.fillColor?.toCSS(true)}
-            onChange={colorChangeHandler}
-          />
+        <EditorSidebarSection
+          initiallyOpened={false}
+          title="Options"
+          className={styles['editor-path-form-toggle']}
+        >
+          <div className={styles['editor-path-form-content']}>
+            <div className={styles['editor-path-form-content-control']}>
+              <label htmlFor={`color-input-${path.id}`}>Color</label>
+              <input
+                type="color"
+                id={`color-input-${path.id}`}
+                value={path.fillColor?.toCSS(true)}
+                onChange={colorChangeHandler}
+              />
+            </div>
 
-          <button type="button" onClick={deletePathHandler}>
-            {isRemoved ? 'Activate' : 'Remove'}
-          </button>
+            <button
+              type="button"
+              onClick={deletePathHandler}
+              className="bro-button"
+            >
+              🚨 {isRemoved ? 'Activate' : 'Remove'}
+            </button>
+          </div>
         </EditorSidebarSection>
       </form>
     </div>
