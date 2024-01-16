@@ -69,6 +69,8 @@ export default function EditorSidebarFormSvg({
 
           updateImportSettings({
             initialSvg: usesReplacedData,
+            initialName:
+              (file.name || '').split('.')[0] || 'broiderer_embroidery',
           })
         }
       }

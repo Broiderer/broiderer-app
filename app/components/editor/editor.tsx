@@ -24,6 +24,7 @@ export type EditorSettings = {
   }
   import: {
     initialSvg: string | null
+    initialName?: string
   }
   stitch: {
     global: Filling

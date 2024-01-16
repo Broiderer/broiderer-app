@@ -82,13 +82,20 @@ export default function EditorSidebar({
     }).data
     switch (format) {
       case 'svg': {
-        downloadFile('overlap_2.svg', optimizedData)
+        downloadFile(
+          `${settings.import.initialName || 'broiderer_embroidery'}.svg`,
+          optimizedData
+        )
         break
       }
       case 'pes': {
         setLoadingDownload(true)
         const blob = new Blob([optimizedData], { type: 'text/plain' })
-        const file = new File([blob], 'my_download.svg', { type: 'text/plain' })
+        const file = new File(
+          [blob],
+          `${settings.import.initialName || 'broiderer_embroidery'}.svg`,
+          { type: 'text/plain' }
+        )
 
         const response = await uploadFile(file)
         const convertedFileUrl = await response.text()
