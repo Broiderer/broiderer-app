@@ -1,6 +1,7 @@
 import {
   Select,
   SelectContent,
+  SelectIcon,
   SelectItem,
   SelectItemText,
   SelectPortal,
@@ -24,6 +25,9 @@ export default function SelectOptions({
     <Select value={value} onValueChange={(val) => onValueChange(val)}>
       <SelectTrigger className="bro-button">
         <SelectValue placeholder={value}></SelectValue>
+        <SelectIcon className="SelectIcon">
+          &nbsp;<i className="bro-icon bro-icon-chevron-down"></i>
+        </SelectIcon>
       </SelectTrigger>
       <SelectPortal>
         <SelectContent className="bro-radix-select-content">
