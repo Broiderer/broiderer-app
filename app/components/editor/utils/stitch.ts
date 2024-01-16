@@ -164,7 +164,7 @@ export const getStiches = (
     return reorderedSkips.flat().map((point, i, self) => (point.isSkip || i === self.length - 1) ? point : [point, ...getStitchesInBetween(point, self[i + 1], gap, false)]).flat(); */
 }
 
-function getClosestSplitIndex(split: Stitch[], splits: Stitch[][]): number {
+/* function getClosestSplitIndex(split: Stitch[], splits: Stitch[][]): number {
   let closestIndex = 0
   let distanceToClosest = distanceToSplit(split, splits[0])
   splits.forEach((splitTmp, i) => {
@@ -174,11 +174,11 @@ function getClosestSplitIndex(split: Stitch[], splits: Stitch[][]): number {
     }
   })
   return closestIndex
-}
+} */
 
-function distanceToSplit(splitA: Stitch[], splitB: Stitch[]): number {
+/* function distanceToSplit(splitA: Stitch[], splitB: Stitch[]): number {
   return Math.min(distance(splitA[splitA.length - 1], splitB[0]))
-}
+} */
 
 export function distance(pointA: Position, pointB: Position) {
   return Math.sqrt(

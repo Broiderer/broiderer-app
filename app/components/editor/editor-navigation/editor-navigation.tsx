@@ -1,4 +1,4 @@
-import { Dispatch, RefObject, SetStateAction } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import styles from './editor-navigation.module.scss'
 import { EditorSettings } from '../editor'
 import { ZOOM_BOUNDS } from '../editor-canvas/editor-canvas'

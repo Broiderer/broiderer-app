@@ -387,11 +387,11 @@ const EditorCanvas = ({
     })
   }
 
-  function mouseDownHandler(e: MouseEvent<HTMLCanvasElement>) {
+  function mouseDownHandler() {
     setIsDragging(true)
   }
 
-  function mouseUpHandler(e: MouseEvent<HTMLCanvasElement>) {
+  function mouseUpHandler() {
     if (isDragging) {
       onSettingsChange((settings) => {
         settings.navigation.center = [paper.view.center.x, paper.view.center.y]
@@ -401,7 +401,7 @@ const EditorCanvas = ({
     }
   }
 
-  function mouseOutHandler(e: MouseEvent<HTMLCanvasElement>) {
+  function mouseOutHandler() {
     if (isDragging) {
       onSettingsChange((settings) => {
         settings.navigation.center = [paper.view.center.x, paper.view.center.y]

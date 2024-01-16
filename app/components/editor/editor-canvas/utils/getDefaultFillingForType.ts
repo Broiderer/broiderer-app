@@ -1,4 +1,5 @@
 import { Filling } from '@/app/components/editor/utils/stitch'
+import * as paper from 'paper'
 
 export function getDefaultFillingForType(type: Filling['type']): Filling {
   switch (type) {

@@ -8,7 +8,7 @@ type SizePickerProps = {
   valueName: string
   value: number
   scale: CanvasScale
-  onValueChanges: (value: number) => void
+  onValueChanges: Function
 }
 
 const minMaxForScale: { [key in CanvasScale]: [number, number] } = {

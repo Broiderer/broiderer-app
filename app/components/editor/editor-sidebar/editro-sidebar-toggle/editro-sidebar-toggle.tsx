@@ -40,8 +40,8 @@ export default function EditorSidebarToggle({
                   ? pathDataRight
                   : pathDataLeft
                 : inverted
-                ? pathDataLeft
-                : pathDataRight
+                  ? pathDataLeft
+                  : pathDataRight
             }
           ></path>
         </svg>

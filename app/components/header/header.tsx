@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import styles from './header.module.scss'
-import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { Logo } from '../logo/logo'
 

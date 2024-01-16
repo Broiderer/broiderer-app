@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import * as paper from 'paper'
 import styles from './editro.module.scss'
 import EditorSidebar from './editor-sidebar/editor-sidebar'
 import EditorCanvas from './editor-canvas/editor-canvas'
