@@ -12,7 +12,7 @@ export default function Header() {
   const { push } = useRouter()
 
   function navigateToEditor() {
-    push('convert/visualize')
+    push('create')
   }
 
   return (

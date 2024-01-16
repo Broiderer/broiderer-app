@@ -22,7 +22,7 @@ export default function Home() {
   }
 
   function navigateToEditor() {
-    push('convert/visualize')
+    push('create')
   }
 
   return (
