@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react'
 import { CanvasScale, pxToScale, scaleToPx } from '../../editor/utils/scale'
 import styles from './size-picker.module.scss'
 import { DEFAULT_DPI } from '../../editor/editor'
-import SelectOptions from '../../select/select'
+import SelectOptions from '../select/select'
 
 type SizePickerProps = {
   valueName: string

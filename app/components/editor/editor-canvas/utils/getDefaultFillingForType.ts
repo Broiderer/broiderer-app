@@ -1,4 +1,4 @@
-import { Filling } from '@/app/components/test-editor-2/utils/fillStitches3'
+import { Filling } from '@/app/components/editor/utils/stitch'
 
 export function getDefaultFillingForType(type: Filling['type']): Filling {
   switch (type) {

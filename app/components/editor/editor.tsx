@@ -7,7 +7,7 @@ import EditorSidebar from './editor-sidebar/editor-sidebar'
 import EditorCanvas from './editor-canvas/editor-canvas'
 import { CanvasScale, scaleToPx } from './utils/scale'
 import { TooltipProvider } from '@radix-ui/react-tooltip'
-import { Filling } from '../test-editor-2/utils/fillStitches3'
+import { Filling } from './utils/stitch'
 import { getDefaultFillingForType } from './editor-canvas/utils/getDefaultFillingForType'
 
 export type EditorSettings = {

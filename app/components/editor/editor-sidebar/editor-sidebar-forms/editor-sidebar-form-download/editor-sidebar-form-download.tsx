@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import styles from './editor-sidebar-form-download.module.scss'
-import SelectOptions from '@/app/components/select/select'
+import SelectOptions from '@/app/components/form/select/select'
 
 export type ExportFormat = 'svg' | 'pes'
 

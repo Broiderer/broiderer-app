@@ -9,14 +9,14 @@ export default function EditorSidebarFormSvgDropzone({ onFileInput }: any) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { 'image/svg+xml': ['.svg'] },
-    maxSize: 10_000,
+    maxSize: 25_000,
   })
 
   return (
     <form>
       <div className={styles['svg-dropzone']} {...getRootProps()}>
         <label>
-          Drop a .svg file here <span>(max 10kB)</span>
+          Drop a .svg file here <span>(max 25kB)</span>
         </label>
         <input type="file" {...getInputProps()}></input>
       </div>

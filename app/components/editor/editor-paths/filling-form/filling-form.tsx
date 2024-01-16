@@ -1,5 +1,5 @@
-import SelectOptions from '@/app/components/select/select'
-import { Filling } from '@/app/components/test-editor-2/utils/fillStitches3'
+import SelectOptions from '@/app/components/form/select/select'
+import { Filling } from '@/app/components/editor/utils/stitch'
 import { getDefaultFillingForType } from '../../editor-canvas/utils/getDefaultFillingForType'
 import styles from './filling-form.module.scss'
 import { ChangeEvent } from 'react'

@@ -13,7 +13,7 @@ import { Point } from 'paper/dist/paper-core'
 import * as paper from 'paper'
 import { EditorSettings } from '../editor'
 import EditorCursor from '../editor-cursor/editor-cursor'
-import { getStiches } from '../../test-editor-2/utils/fillStitches3'
+import { getStiches } from '../utils/stitch'
 import getPathChildren, { setPathsInitialIds } from './utils/getPathChildren'
 import EditorPaths from '../editor-paths/editor-paths'
 
@@ -502,11 +502,8 @@ const EditorCanvas = ({
   }
 
   function stitchSettingsChanged(stitchSettings: EditorSettings['stitch']) {
-    console.log('settings change here', stitchSettings)
     onSettingsChange({ ...settings, stitch: stitchSettings })
   }
-
-  console.log('render')
 
   return (
     <div className={styles['editor-canvas']}>

@@ -1,4 +1,4 @@
-import { Filling } from '@/app/components/test-editor-2/utils/fillStitches3'
+import { Filling } from '@/app/components/editor/utils/stitch'
 import styles from './editor-paths-global.module.scss'
 import FillingForm from '../filling-form/filling-form'
 
