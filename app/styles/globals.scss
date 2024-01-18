@@ -1,46 +1,166 @@
-@import './reset.scss';
-@import './vars.scss';
+@import "./reset.scss";
+@import "./fonts.scss";
+@import "./icons.scss";
+@import "./vars.scss";
+@import "./radix.scss";
 
 .bro-title {
-    font-size: 1.8rem;
+  font-weight: 600;
+  font-size: 2.5rem;
+  line-height: 1.1;
 }
 
 .bro-emphasis {
-    color: $color-primary;
-    font-weight: 600;
+  color: $color-primary;
+  font-weight: 600;
 }
 
 .bro-muted {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .bro-link {
+  color: $grey-secondary;
+  padding: 2px;
+  border-radius: 3px;
+  cursor: pointer;
+
+  &.active {
     color: $color-primary;
-    padding: 2px;
-    border-radius: 3px;
+  }
 
-    &:hover {
-        background-color: $color-primary-trans;
-    }
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
 
-    &.active {
-        background-color: $color-primary-trans;
-    }
+  &:hover {
+    background-color: $grey-light;
+  }
 }
 
 .bro-button {
-    font-size: .875rem;
-    line-height: 1rem;
-    padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.1s linear;
+  text-decoration: none;
+  color: $grey;
+  background: none;
+  font-size: 1rem;
+  padding: 0.8rem 0.6rem;
+  border: none;
+  border-radius: 0.5rem;
+  line-height: 1rem;
+  font-weight: 600;
+  background-color: $grey-light;
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+
+  &:hover {
+    background-color: $grey-light-secondary;
+  }
+
+  &.bro-button-primary {
+    border: none;
     background-color: $color-primary;
-    border-radius: 0.3rem;
-    background-image: none;
-    border: 2px solid $color-primary-dark;
     color: white;
-    font-weight: 600;
-    cursor: pointer;
 
     &:hover {
-        background-color: $color-primary-dark;
+      background-color: $color-primary-dark;
     }
+  }
+
+  &.bro-button-icon {
+    padding: 0.5rem;
+    display: flex;
+  }
+
+  &.bro-button-loading {
+    animation-duration: 1.8s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    background: #f6f7f8;
+    background: linear-gradient(
+      to right,
+      $grey 8%,
+      $color-primary 38%,
+      $grey 84%
+    );
+    background-size: 1000px 640px;
+
+    position: relative;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  @keyframes placeHolderShimmer {
+    0% {
+      background-position: -468px 0;
+    }
+    100% {
+      background-position: 468px 0;
+    }
+  }
+}
+
+.bro-checkbox-control {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+
+  input[type="checkbox"] {
+    display: grid;
+    place-content: center;
+    appearance: none;
+    margin: 0;
+    background-color: $light;
+    font: inherit;
+    color: currentColor;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid $grey;
+    border-radius: 0.15em;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: 2px;
+    }
+
+    &::before {
+      content: "";
+      width: 0.65em;
+      height: 0.65em;
+      transform: scale(0);
+      transition: 0.1s transform ease-in-out;
+      box-shadow: inset 1em 1em $grey;
+    }
+
+    &:checked::before {
+      transform: scale(1);
+    }
+  }
+}
+
+.bro-input {
+  text-decoration: none;
+  color: $grey;
+  background: $light;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  line-height: 1rem;
+  border: 2px solid $grey-light;
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
 }

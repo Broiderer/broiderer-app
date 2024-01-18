@@ -1,0 +1,14 @@
+@import "../../../../../styles/vars.scss";
+
+.editor-sidebar-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0 1rem;
+  margin-left: 1px;
+  border-left: 2px solid $grey-light;
+
+  &-size {
+    margin-top: 1rem;
+  }
+}

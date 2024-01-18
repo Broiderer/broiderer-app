@@ -1,0 +1,45 @@
+@import "./fonts.scss";
+
+.bro-icon {
+  font-family: "Icons";
+
+  &-chevron-left:before {
+    content: "\ea0c";
+  }
+
+  &-chevron-right:before {
+    content: "\ea0b";
+  }
+
+  &-chevron-up:before {
+    content: "\ea02";
+  }
+
+  &-chevron-down:before {
+    content: "\ea0d";
+  }
+
+  &-align-left:before {
+    content: "\ea3e";
+  }
+
+  &-align-right:before {
+    content: "\ea3d";
+  }
+
+  &-upload:before {
+    content: "\e90a";
+  }
+
+  &-save:before {
+    content: "\e941";
+  }
+
+  &-save:before {
+    content: "\e941";
+  }
+
+  &-grid:before {
+    content: "\e9a5";
+  }
+}

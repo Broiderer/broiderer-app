@@ -1,0 +1,23 @@
+@import "../../../styles/vars.scss";
+
+.editor-cursor {
+  position: absolute;
+  top: 10px;
+  left: calc(15rem + 20px);
+  background-color: white;
+  border: 2px solid $grey-light;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  min-width: 70px;
+  z-index: 1;
+
+  &-position {
+    &-name {
+      font-weight: 700;
+    }
+
+    &-value {
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}

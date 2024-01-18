@@ -1,0 +1,19 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+
+  &-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid white;
+  }
+
+  &-name {
+    font-weight: 600;
+    font-size: 1.4rem;
+  }
+}

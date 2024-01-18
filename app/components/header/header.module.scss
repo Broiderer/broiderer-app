@@ -1,28 +1,30 @@
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 2rem;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3rem;
+  position: relative;
+  z-index: 1;
 
-    .header-left {
-        font-size: 1.5rem;
-        font-weight: 600;
+  nav {
+    flex: 1;
 
-        a {
-            text-decoration: none;
-            color: black;
-
-            &:visited {
-                color: black;
-            }
-        }
+    ul {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 1.5rem;
     }
+  }
+}
 
-    .header-right {
-        nav > ul {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-    }
+@media (max-width: 600px) {
+  .header-logo-name {
+    display: none;
+  }
+
+  .header {
+    padding: 0 1rem;
+  }
 }

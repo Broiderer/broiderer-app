@@ -1,0 +1,64 @@
+.bro-radix-select-trigger {
+  cursor: pointer;
+  transition: background-color 0.1s linear;
+  text-decoration: none;
+  color: $grey;
+  background: none;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: $grey-light;
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.bro-radix-select-content {
+  overflow: hidden;
+  background-color: white;
+  border-radius: 5px;
+  border: 2px solid $grey-light;
+  z-index: 2;
+  box-shadow:
+    0px 10px 38px -10px rgba(22, 23, 24, 0.35),
+    0px 10px 20px -15px rgba(22, 23, 24, 0.2);
+}
+
+.bro-radix-select-item {
+  display: flex;
+  align-items: center;
+  height: 1.5rem;
+  padding: 10px 1rem;
+  position: relative;
+  user-select: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.bro-radix-select-item[data-disabled] {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.bro-radix-select-item[data-highlighted] {
+  outline: none;
+  background-color: $light;
+  border-color: $color-primary;
+}
+
+.bro-radix-tooltip-trigger {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+}
+
+.bro-radix-tooltip-content {
+  padding: 4px 5px;
+  border-radius: 5px;
+  background-color: $grey-secondary;
+  margin: 5px;
+  color: white;
+}
