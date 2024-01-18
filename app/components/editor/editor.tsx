@@ -35,7 +35,10 @@ const ZOOM_BOUNDS = { min: 0.5, max: 5 }
 export const DEFAULT_DPI = 72
 
 const DEFAULT_SETTINGS: EditorSettings = {
-  navigation: { zoom: ZOOM_BOUNDS.min, center: [0, 0] },
+  navigation: {
+    zoom: ZOOM_BOUNDS.min,
+    center: [window.innerWidth / 2, window.innerHeight / 2],
+  },
   grid: {
     displayAxes: true,
     displayPointerPosition: false,
