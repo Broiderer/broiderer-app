@@ -50,6 +50,8 @@ export default function EditorPaths({
                   path={path}
                   updatePath={updatePath}
                   toggleRemovePath={toggleRemovePath}
+                  settings={stitchSettings}
+                  updateSettings={updateStitchSettings}
                 ></EditorPath>
               </li>
             ))}

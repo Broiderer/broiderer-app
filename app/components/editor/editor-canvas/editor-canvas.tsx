@@ -141,7 +141,11 @@ const EditorCanvas = ({
       if (!computeStitches && matchingPath) {
         path = matchingPath as paper.Path
       } else {
-        const newPathPoints = getStiches(pathChild, settings.stitch.global)
+        const newPathPoints = getStiches(
+          pathChild,
+          settings.stitch[pathChild.data['broiderer-import-id']] ||
+            settings.stitch.global
+        )
 
         if (newPathPoints.length === 0) {
           break
