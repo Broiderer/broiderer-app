@@ -11,7 +11,9 @@ export default function EditorPathsGlobal({
 }) {
   return (
     <div className={styles['editor-paths-global']}>
-      <div className={styles['editor-paths-global-title']}>Global filling</div>
+      <div className={styles['editor-paths-global-title']}>
+        🌐 Global filling
+      </div>
       <FillingForm
         filling={globalFilling}
         onUpdateFilling={updateGlobalFilling}

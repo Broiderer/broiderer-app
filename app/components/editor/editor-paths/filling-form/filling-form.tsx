@@ -39,7 +39,7 @@ export default function FillingForm({
   }
 
   return (
-    <form className={styles['filling-form']}>
+    <div className={styles['filling-form']}>
       <div className={styles['filling-form-control']}>
         <label>Fill type</label>
         <SelectOptions
@@ -89,6 +89,6 @@ export default function FillingForm({
           </div>
         </>
       )}
-    </form>
+    </div>
   )
 }

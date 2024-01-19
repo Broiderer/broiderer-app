@@ -3,15 +3,21 @@ import * as paper from 'paper'
 import styles from './editor-path.module.scss'
 import { ChangeEvent, useMemo } from 'react'
 import EditorSidebarSection from '../../editor-sidebar/editor-sidebar-section/editor-sidebar-section'
+import FillingForm from '../filling-form/filling-form'
+import { EditorSettings } from '../../editor'
 
 type EditorPathProps = {
   path: paper.Path | paper.CompoundPath
   updatePath: (oldPathId: number, name: 'fillColor', value: paper.Color) => void
   toggleRemovePath: (oldPathId: number) => void
+  settings: EditorSettings['stitch']
+  updateSettings: (settings: EditorSettings['stitch']) => void
 }
 
 export default function EditorPath({
   path,
+  settings,
+  updateSettings,
   updatePath,
   toggleRemovePath,
 }: EditorPathProps) {
@@ -30,6 +36,13 @@ export default function EditorPath({
 
   function deletePathHandler() {
     toggleRemovePath(path.data['broiderer-import-id'])
+  }
+
+  function clearCustomFilling() {
+    updateSettings({
+      ...settings,
+      [path.data['broiderer-import-id']]: undefined,
+    })
   }
 
   return (
@@ -64,6 +77,28 @@ export default function EditorPath({
                 onChange={colorChangeHandler}
               />
             </div>
+
+            <FillingForm
+              filling={
+                settings[path.data['broiderer-import-id']] || settings['global']
+              }
+              onUpdateFilling={(filling) =>
+                updateSettings({
+                  ...settings,
+                  [path.data['broiderer-import-id']]: filling,
+                })
+              }
+            ></FillingForm>
+
+            {settings[path.data['broiderer-import-id']] && (
+              <button
+                type="button"
+                onClick={clearCustomFilling}
+                className="bro-button"
+              >
+                🌐 Reset To Global
+              </button>
+            )}
 
             <button
               type="button"

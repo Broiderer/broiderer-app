@@ -1,0 +1,16 @@
+.version-name {
+  margin-top: 2rem;
+  margin-bottom: 5px;
+}
+
+.version-date {
+  opacity: 0.7;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.version-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
