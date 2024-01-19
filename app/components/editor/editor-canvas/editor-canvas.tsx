@@ -37,7 +37,7 @@ const EditorCanvas = ({
   >([])
 
   useEffect(() => {
-    if (canvasRef?.current) {
+    if (canvasRef?.current && !paper.project?.currentStyle) {
       paper.install(document)
       paper.setup(canvasRef.current)
 
@@ -57,6 +57,8 @@ const EditorCanvas = ({
 
       setViewLoaded(true)
     }
+
+    return () => paper.project.remove()
   }, [])
 
   useEffect(() => {
@@ -79,6 +81,11 @@ const EditorCanvas = ({
       importedLayer.opacity = 0
 
       importedLayer.importSVG(settings.import.initialSvg)
+
+      importedLayer.translate([
+        -importedLayer.bounds.x,
+        -importedLayer.bounds.y,
+      ])
 
       setPathsInitialIds(importedLayer)
 
