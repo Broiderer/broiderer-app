@@ -24,7 +24,7 @@ export type AlongFilling = {
 }
 export type Filling = LinearFilling | RadialFilling | AlongFilling
 
-export const getStiches = (
+export const getStitches = (
   path: paper.Path | paper.CompoundPath,
   filling: Filling = { type: 'linear', angle: 0, gap: 2, innerGap: 20 }
 ) => {
@@ -289,7 +289,7 @@ function getLinesAlongPath(
   for (let i = 0; i < pathLength; i += gap) {
     const normal = path.getNormalAt(i)
     const line = new paper.Path([
-      path.getPointAt(i),
+      path.getPointAt(i).subtract(normal),
       path.getPointAt(i).add(normal.multiply(2 * offset)),
     ])
     line.translate(path.getNormalAt(i).subtract(normal.multiply(offset)))

@@ -13,7 +13,7 @@ import { Point } from 'paper/dist/paper-core'
 import * as paper from 'paper'
 import { EditorSettings } from '../editor'
 import EditorCursor from '../editor-cursor/editor-cursor'
-import { getStiches } from '../utils/stitch'
+import { getStitches } from '../utils/stitch'
 import getPathChildren, { setPathsInitialIds } from './utils/getPathChildren'
 import EditorPaths from '../editor-paths/editor-paths'
 
@@ -114,7 +114,10 @@ const EditorCanvas = ({
 
     const pathChildren = getPathChildren(importLayer, true)
       .reverse()
-      .filter((path) => !path.data['broiderer-removed'] && path.pathData)
+      .filter(
+        (path) =>
+          !path.data['broiderer-removed'] && path.pathData && path.opacity > 0
+      )
       .map((path, i, self) => {
         for (let j = 0; j < i; j++) {
           path = path.subtract(self[j], { insert: false }) as paper.Path
@@ -141,7 +144,7 @@ const EditorCanvas = ({
       if (!computeStitches && matchingPath) {
         path = matchingPath as paper.Path
       } else {
-        const newPathPoints = getStiches(
+        const newPathPoints = getStitches(
           pathChild,
           settings.stitch[pathChild.data['broiderer-import-id']] ||
             settings.stitch.global
