@@ -82,6 +82,15 @@ const EditorCanvas = ({
 
       importedLayer.importSVG(settings.import.initialSvg)
 
+      if (settings.import.fitBoundsOnImport) {
+        const emZoneLayer = paper.project.layers.find(
+          (layer) => layer.name === 'broiderer-embroidery-zone'
+        )
+        if (emZoneLayer) {
+          importedLayer.fitBounds(emZoneLayer.bounds)
+        }
+      }
+
       importedLayer.translate([
         -importedLayer.bounds.x,
         -importedLayer.bounds.y,
