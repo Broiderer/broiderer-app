@@ -9,7 +9,6 @@ export default function Documentation() {
       <Header></Header>
       <main className={styles['documentation-content']}>
         <h1 className="bro-title">Documentation</h1>
-        <p>🚧 This section is WIP 🚧</p>
         <section className={styles['documentation-section']}>
           <Versions></Versions>
         </section>
