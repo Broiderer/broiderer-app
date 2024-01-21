@@ -296,9 +296,5 @@ function getLinesAlongPath(
     lines.push(line)
   }
 
-  /* lines.forEach(line => {
-        line.strokeColor = new paper.Color('green')
-        paper.project.layers[0].addChild(line)
-    }) */
   return lines
 }

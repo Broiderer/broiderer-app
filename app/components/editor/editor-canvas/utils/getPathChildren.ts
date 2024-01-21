@@ -10,6 +10,7 @@ export default function getPathChildren(
         (acc, curr) => acc.subtract(curr, { insert: false }) as paper.Path,
         nodes[0]
       )
+    subtracted.fillColor = node.fillColor
     return subtracted.length > 0 ? [subtracted] : []
   }
 
@@ -44,6 +45,12 @@ function isCompoundPathItem(item: paper.Item): item is paper.CompoundPath {
 export function setPathsInitialIds(item: paper.Item): void {
   if (isPathItem(item)) {
     item.data['broiderer-import-id'] = item.id
+  }
+  if (isCompoundPathItem(item)) {
+    for (const child of item.children) {
+      child.data['broiderer-import-id'] = item.id
+    }
+    return
   }
   ;(item.children || []).map(setPathsInitialIds)
 }
