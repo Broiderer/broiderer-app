@@ -142,6 +142,7 @@ export default function EditorSidebar({
           initiallyOpened={true}
         >
           <EditorSidebarFromSvg
+            settings={settings['import']}
             updateImportSettings={handleImportedImportChange}
           ></EditorSidebarFromSvg>
         </EditorSidebarSection>

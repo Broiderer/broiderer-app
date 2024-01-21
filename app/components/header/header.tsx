@@ -29,7 +29,7 @@ export default function Header() {
               About
             </Link>
           </li>
-          {/*           <li>
+          <li>
             <Link
               href="documentation"
               className={`bro-link ${
@@ -38,7 +38,7 @@ export default function Header() {
             >
               Docs
             </Link>
-          </li> */}
+          </li>
           <li>
             <button
               type="button"

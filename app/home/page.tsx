@@ -1,32 +1,13 @@
-'use client'
 import styles from './styles.module.scss'
-import landing1 from '../assets/landing-1.jpg'
-import Image from 'next/image'
-import { MouseEvent, useRef } from 'react'
+
 import Header from '../components/header/header'
 import Footer from '../components/footer/footer'
-import { useRouter } from 'next/navigation'
+import HomeCreateButton from './home-create-button/home-create-button'
+import HomeImage from './home-image/home-image'
 
 export default function Home() {
-  const { push } = useRouter()
-
-  const imageRef = useRef<HTMLImageElement>(null)
-
-  function mouseMoveHandler(event: MouseEvent) {
-    if (!imageRef.current) {
-      return
-    }
-    const rotateY = (event.pageX / window.innerWidth - 0.5) * 10
-    const rotateX = -(event.pageY / window.innerHeight - 0.5) * 10
-    imageRef.current.style.transform = `perspective(75em) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
-  }
-
-  function navigateToEditor() {
-    push('create')
-  }
-
   return (
-    <div className={styles.home} onMouseMove={mouseMoveHandler}>
+    <div className={styles.home}>
       <Header></Header>
       <main className={styles['home-content']}>
         <div className={styles['home-content-text']}>
@@ -39,22 +20,11 @@ export default function Home() {
             <a href="about" className="bro-button">
               📔 Learn more
             </a>
-            <button
-              type="button"
-              className="bro-button bro-button-primary"
-              onClick={navigateToEditor}
-            >
-              ✨ Start Creating
-            </button>
+            <HomeCreateButton></HomeCreateButton>
           </div>
         </div>
         <div className={styles['home-content-images']}>
-          <Image
-            src={landing1}
-            ref={imageRef}
-            alt=""
-            className={styles['home-content-images-image1']}
-          ></Image>
+          <HomeImage></HomeImage>
         </div>
       </main>
       <div className={styles['home-background']}>

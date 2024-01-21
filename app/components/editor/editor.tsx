@@ -24,6 +24,7 @@ export type EditorSettings = {
   import: {
     initialSvg: string | null
     initialName?: string
+    fitBoundsOnImport: boolean
   }
   stitch: {
     global: Filling
@@ -46,7 +47,7 @@ const DEFAULT_SETTINGS: EditorSettings = {
     displayEmbroideryZone: true,
     embroideryZoneSize: scaleToPx(10, CanvasScale.CM, DEFAULT_DPI),
   },
-  import: { initialSvg: null },
+  import: { initialSvg: null, fitBoundsOnImport: false },
   stitch: {
     global: getDefaultFillingForType('linear'),
   },

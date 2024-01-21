@@ -3,26 +3,51 @@ import styles from './versions.module.scss'
 type Version = {
   name: string
   date: string
-  tasks: (JSX.Element | string)[]
+  tasks: { content: JSX.Element | string; type?: 'task' | 'bug' }[]
 }
 
 export default function Versions() {
   const versions: Version[] = [
     {
+      name: '1.2.0',
+      date: '21/01/2024',
+      tasks: [
+        { content: 'Option to fit bounds on import' },
+        { content: 'Make sure landing pages is ssr' },
+        { content: 'Allow stitch filling along specific path' },
+      ],
+    },
+    {
       name: '1.1.0',
       date: '19/01/2024',
       tasks: [
-        'Create the version page in the doc',
-        'Re-position the imported shapes on the top right corner to avoid mis-interpretation of the bounds on export',
-        'Allow for a different filling setup for each shape',
+        { content: 'Create the version page in the doc' },
+        {
+          content:
+            'Re-position the imported shapes on the top right corner to avoid mis-interpretation of the bounds on export',
+        },
+        { content: 'Allow for a different filling setup for each shape' },
       ],
     },
     {
       name: '1.0.1 - first release',
       date: '17/01/2024',
-      tasks: ['Editor page with svg import and basic customization.'],
+      tasks: [
+        { content: 'Editor page with svg import and basic customization.' },
+      ],
     },
   ]
+
+  function getEmojiForType(type: Version['tasks'][0]['type'] = 'task'): string {
+    switch (type) {
+      case 'task': {
+        return '🌀'
+      }
+      case 'bug': {
+        return '🤖'
+      }
+    }
+  }
 
   return (
     <>
@@ -35,7 +60,9 @@ export default function Versions() {
           <p className={styles['version-date']}>{version.date}</p>
           <div className={styles['version-tasks']}>
             {version.tasks.map((task, j) => (
-              <p key={j}>✅ {task}</p>
+              <p key={j}>
+                {getEmojiForType(task.type)} {task.content}
+              </p>
             ))}
           </div>
         </div>

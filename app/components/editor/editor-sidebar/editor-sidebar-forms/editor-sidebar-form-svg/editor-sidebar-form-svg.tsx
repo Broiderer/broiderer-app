@@ -2,11 +2,14 @@ import { EditorSettings } from '../../../editor'
 import * as svgo from 'svgo'
 import { replaceUses } from '../../../editor-canvas/utils/replaceUses'
 import EditorSidebarFormSvgDropzone from './editor-sidebar-form-svg-dropzone/editor-sidebar-form-svg-dropzone'
+import styles from './editor-sidebar-form-svg.module.scss'
 
 export default function EditorSidebarFormSvg({
   updateImportSettings,
+  settings,
 }: {
   updateImportSettings: (settings: EditorSettings['import']) => void
+  settings: EditorSettings['import']
 }) {
   const handleFileChange = (file: File) => {
     if (file) {
@@ -68,6 +71,7 @@ export default function EditorSidebarFormSvg({
           const usesReplacedData = replaceUses(optimizedData)
 
           updateImportSettings({
+            ...settings,
             initialSvg: usesReplacedData,
             initialName:
               (file.name || '').split('.')[0] || 'broiderer_embroidery',
@@ -80,10 +84,24 @@ export default function EditorSidebarFormSvg({
   }
 
   return (
-    <>
+    <form>
       <EditorSidebarFormSvgDropzone
         onFileInput={handleFileChange}
       ></EditorSidebarFormSvgDropzone>
-    </>
+      <div className={`${styles['fit-bounds-checkbox']} bro-checkbox-control`}>
+        <input
+          type="checkbox"
+          id="fit-bounds-on-import"
+          checked={settings.fitBoundsOnImport}
+          onChange={() =>
+            updateImportSettings({
+              ...settings,
+              fitBoundsOnImport: !settings.fitBoundsOnImport,
+            })
+          }
+        ></input>
+        <label htmlFor="fit-bounds-on-import">Fit bounds on import</label>
+      </div>
+    </form>
   )
 }
