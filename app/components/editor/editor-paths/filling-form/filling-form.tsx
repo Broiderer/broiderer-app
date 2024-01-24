@@ -35,6 +35,13 @@ export default function FillingForm({
     onUpdateFilling({ ...filling, [property]: value })
   }
 
+  function updateFillingRandomizeFIrstStepHandler() {
+    onUpdateFilling({
+      ...filling,
+      randomizeFirstStep: !filling.randomizeFirstStep,
+    })
+  }
+
   function updateFillingAngleHandler(event: ChangeEvent<HTMLInputElement>) {
     const value = (Number(event.target.value) * Math.PI) / 180
 
@@ -107,6 +114,16 @@ export default function FillingForm({
               className="bro-input"
             ></input>
           </div>
+
+          <div className={`bro-checkbox-control`}>
+            <input
+              type="checkbox"
+              id="fit-bounds-on-import"
+              checked={Boolean(filling.randomizeFirstStep)}
+              onChange={updateFillingRandomizeFIrstStepHandler}
+            ></input>
+            <label htmlFor="fit-bounds-on-import">Randomize first step</label>
+          </div>
         </>
       )}
 
@@ -158,6 +175,18 @@ export default function FillingForm({
               onChange={(e) => updateFillingInputHandler('offset', e)}
               className="bro-input"
             ></input>
+          </div>
+
+          <div
+            className={`${styles['filling-form-control']} bro-checkbox-control`}
+          >
+            <input
+              type="checkbox"
+              id="fit-bounds-on-import"
+              checked={Boolean(filling.randomizeFirstStep)}
+              onChange={updateFillingRandomizeFIrstStepHandler}
+            ></input>
+            <label htmlFor="fit-bounds-on-import">Randomize first step</label>
           </div>
         </>
       )}

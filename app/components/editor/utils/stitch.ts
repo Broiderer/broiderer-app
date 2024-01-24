@@ -8,12 +8,14 @@ export type LinearFilling = {
   angle: number
   gap: number
   innerGap: number
+  randomizeFirstStep?: boolean
 }
 export type RadialFilling = {
   type: 'radial'
   angle: number
   around: { x: number; y: number }
   innerGap: number
+  randomizeFirstStep?: boolean
 }
 export type AlongFilling = {
   type: 'along'
@@ -21,6 +23,7 @@ export type AlongFilling = {
   gap: number
   offset: number
   innerGap: number
+  randomizeFirstStep?: boolean
 }
 export type Filling = LinearFilling | RadialFilling | AlongFilling
 
@@ -112,7 +115,7 @@ export const getStitches = (
               point,
               self[i + 1],
               filling.innerGap,
-              false
+              Boolean(filling.randomizeFirstStep)
             ),
           ]
         })
