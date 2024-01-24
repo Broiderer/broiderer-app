@@ -5,19 +5,25 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Broiderer | Converter for embroidery files',
-  description: 'Broiderer | Editor and converter from svg to embroidery files',
+  title: 'Broiderer | Create embroidery files from vectorial designs',
+  description:
+    'Seamlessly transform your SVG files into embroideries – visualize and refine your designs before downloading machine-compatible files.',
   keywords: [
-    'embroidery file editor',
-    'SVG to PES converter',
-    'Brother machine files',
+    'embroidery',
+    'file editor',
+    'svg',
+    'pes',
+    'converter',
+    'Brother embroidery machine',
     'customized stitch design',
-    'online embroidery tool',
+    'online tool',
     'digital embroidery',
     'file conversion tool',
     'machine embroidery design',
     'Broiderer',
     'Embroidery pattern personalization',
+    'canva',
+    'online inkscape',
   ],
   icons: {
     icon: '/icon.ico',
