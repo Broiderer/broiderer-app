@@ -9,6 +9,14 @@ type Version = {
 export default function Versions() {
   const versions: Version[] = [
     {
+      name: '1.3.0',
+      date: '24/01/2024',
+      tasks: [
+        { content: 'New path option for randomized first step' },
+        { content: 'Title, keywords & description improvements for SEO' },
+      ],
+    },
+    {
       name: '1.2.0',
       date: '21/01/2024',
       tasks: [
@@ -51,7 +59,7 @@ export default function Versions() {
 
   return (
     <>
-      <h2 className="bro-title-2">Versions</h2>
+      <h2 className="bro-title-2">Changelog</h2>
       {versions.map((version, i) => (
         <div key={i}>
           <h3 className={`${styles['version-name']} bro-title-3`}>
