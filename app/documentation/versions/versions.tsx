@@ -9,6 +9,11 @@ type Version = {
 export default function Versions() {
   const versions: Version[] = [
     {
+      name: '1.3.1',
+      date: '27/01/2024',
+      tasks: [{ content: 'Fix export paths content', type: 'bug' }],
+    },
+    {
       name: '1.3.0',
       date: '24/01/2024',
       tasks: [

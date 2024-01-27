@@ -62,12 +62,19 @@ export default function EditorSidebar({
     if (!stitchLayer) {
       return
     }
-    const svgStr = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="500px" height="500px">${
-      stitchLayer.exportSVG({
+    const savedLayer = stitchLayer.clone({ insert: false })
+
+    savedLayer.children = savedLayer.children.filter((child) =>
+      Boolean(child.data['broiderer-import-id'])
+    )
+
+    const svgStr = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="500px" height="500px">${
+      savedLayer.exportSVG({
         bounds: 'content',
         asString: true,
       }) as string
     }</svg>`
+
     const optimizedData = svgo.optimize(svgStr, {
       plugins: [
         {
@@ -80,6 +87,7 @@ export default function EditorSidebar({
         },
       ],
     }).data
+    console.log(optimizedData)
     switch (format) {
       case 'svg': {
         downloadFile(
