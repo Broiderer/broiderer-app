@@ -1,4 +1,5 @@
 import paper from 'paper'
+import { isPathItem } from '../editor-canvas/utils/getPathChildren'
 
 export type Position = { x: number; y: number }
 type Stitch = Position & { isSkip?: boolean }
@@ -25,7 +26,17 @@ export type AlongFilling = {
   innerGap: number
   randomizeFirstStep?: boolean
 }
-export type Filling = LinearFilling | RadialFilling | AlongFilling
+
+export type StrokeFilling = {
+  type: 'stroke'
+  gap: number
+  thickness: 1
+}
+export type Filling =
+  | LinearFilling
+  | RadialFilling
+  | AlongFilling
+  | StrokeFilling
 
 export const getStitches = (
   path: paper.Path | paper.CompoundPath,
@@ -37,6 +48,10 @@ export const getStitches = (
     paper.project.layers.find(
       (layer) => layer.name === 'broiderer-embroidery-zone'
     )?.bounds || path.bounds
+
+  if (filling.type === 'stroke') {
+    return getStrokeStitches(path, filling.gap)
+  }
 
   let gridLinePaths = []
 
@@ -300,4 +315,29 @@ function getLinesAlongPath(
   }
 
   return lines
+}
+
+function getStrokeStitches(
+  path: paper.Path | paper.CompoundPath,
+  gap: number
+): Stitch[] {
+  if (gap <= 0) {
+    return []
+  }
+
+  if (isPathItem(path)) {
+    const stitches = []
+
+    let i = 0
+    while (i < path.length) {
+      stitches.push(path.getPointAt(i))
+      i += gap
+    }
+
+    stitches.push(path.getPointAt(path.length))
+
+    return stitches
+  }
+
+  return []
 }

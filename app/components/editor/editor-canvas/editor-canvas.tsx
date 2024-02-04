@@ -14,7 +14,7 @@ import * as paper from 'paper'
 import { EditorSettings } from '../editor'
 import EditorCursor from '../editor-cursor/editor-cursor'
 import { getStitches } from '../utils/stitch'
-import getPathChildren, { setPathsInitialIds } from './utils/getPathChildren'
+import { getPathChildren, setPathsInitialIds } from './utils/getPathChildren'
 import EditorPaths from '../editor-paths/editor-paths'
 
 const ZOOM_FACTOR = 1.05
@@ -82,6 +82,8 @@ const EditorCanvas = ({
 
       importedLayer.importSVG(settings.import.initialSvg)
 
+      importedLayer.children = getPathChildren(importedLayer)
+
       if (settings.import.fitBoundsOnImport) {
         const emZoneLayer = paper.project.layers.find(
           (layer) => layer.name === 'broiderer-embroidery-zone'
@@ -121,18 +123,12 @@ const EditorCanvas = ({
       return
     }
 
-    const pathChildren = getPathChildren(importLayer, true)
+    const pathChildren = getPathChildren(importLayer)
       .reverse()
       .filter(
         (path) =>
           !path.data['broiderer-removed'] && path.pathData && path.opacity > 0
       )
-      .map((path, i, self) => {
-        for (let j = 0; j < i; j++) {
-          path = path.subtract(self[j], { insert: false }) as paper.Path
-        }
-        return path
-      })
 
     for (const pathChild of pathChildren) {
       pathChild.closePath()
@@ -498,7 +494,7 @@ const EditorCanvas = ({
     if (!importLayer) {
       return
     }
-    const matchingChild = getPathChildren(importLayer, false).find(
+    const matchingChild = getPathChildren(importLayer).find(
       (child) => child.data['broiderer-import-id'] === oldPathId
     )
     if (matchingChild) {
@@ -514,7 +510,7 @@ const EditorCanvas = ({
     if (!importLayer) {
       return
     }
-    const matchingChild = getPathChildren(importLayer, false).find(
+    const matchingChild = getPathChildren(importLayer).find(
       (child) => child.data['broiderer-import-id'] === pathImportId
     )
     if (matchingChild) {
