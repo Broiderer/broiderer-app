@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './editro.module.scss'
 import EditorSidebar from './editor-sidebar/editor-sidebar'
 import EditorCanvas from './editor-canvas/editor-canvas'
@@ -8,6 +8,7 @@ import { CanvasScale, scaleToPx } from './utils/scale'
 import { TooltipProvider } from '@radix-ui/react-tooltip'
 import { Filling } from './utils/stitch'
 import { getDefaultFillingForType } from './editor-canvas/utils/getDefaultFillingForType'
+import { storageAvailable } from './utils/localstorage'
 
 export type EditorSettings = {
   navigation: {
@@ -53,8 +54,42 @@ const DEFAULT_SETTINGS: EditorSettings = {
   },
 }
 
+function getLocalstorageInitialSettings(): Partial<EditorSettings> {
+  if (!storageAvailable()) {
+    return {}
+  }
+  const gridSettings = localStorage.getItem('broiderer_settings_grid')
+  const importSettings = localStorage.getItem('broiderer_settings_import')
+  if (!gridSettings || !importSettings) {
+    return {}
+  }
+
+  return {
+    grid: JSON.parse(gridSettings),
+    import: JSON.parse(importSettings),
+  }
+}
+
 export default function Editor() {
-  const [settings, setSettings] = useState<EditorSettings>(DEFAULT_SETTINGS)
+  const [settings, setSettings] = useState<EditorSettings>({
+    ...DEFAULT_SETTINGS,
+    ...getLocalstorageInitialSettings(),
+  })
+
+  useEffect(() => {
+    if (!storageAvailable()) {
+      return
+    }
+    localStorage.setItem(
+      'broiderer_settings_grid',
+      JSON.stringify(settings.grid)
+    )
+
+    localStorage.setItem(
+      'broiderer_settings_import',
+      JSON.stringify({ fitBoundsOnImport: settings.import.fitBoundsOnImport })
+    )
+  }, [settings.grid, settings.import])
 
   return (
     <TooltipProvider delayDuration={0}>

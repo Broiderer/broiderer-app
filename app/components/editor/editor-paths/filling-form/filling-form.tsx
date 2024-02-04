@@ -1,10 +1,14 @@
 import SelectOptions from '@/app/components/form/select/select'
-import { Filling } from '@/app/components/editor/utils/stitch'
+import {
+  AlongFilling,
+  Filling,
+  LinearFilling,
+} from '@/app/components/editor/utils/stitch'
 import { getDefaultFillingForType } from '../../editor-canvas/utils/getDefaultFillingForType'
 import styles from './filling-form.module.scss'
 import { ChangeEvent } from 'react'
 import * as paper from 'paper'
-import getPathChildren from '../../editor-canvas/utils/getPathChildren'
+import { getPathChildren } from '../../editor-canvas/utils/getPathChildren'
 
 type FillingFormProps = {
   filling: Filling
@@ -35,10 +39,12 @@ export default function FillingForm({
     onUpdateFilling({ ...filling, [property]: value })
   }
 
-  function updateFillingRandomizeFIrstStepHandler() {
+  function updateFillingRandomizeFirstStepHandler(
+    currFilling: AlongFilling | LinearFilling
+  ) {
     onUpdateFilling({
-      ...filling,
-      randomizeFirstStep: !filling.randomizeFirstStep,
+      ...currFilling,
+      randomizeFirstStep: !currFilling.randomizeFirstStep,
     })
   }
 
@@ -70,7 +76,7 @@ export default function FillingForm({
       <div className={styles['filling-form-control']}>
         <label>Fill type</label>
         <SelectOptions
-          options={['linear', 'along']}
+          options={['linear', 'along', 'stroke']}
           value={filling.type}
           onValueChange={(val) =>
             fillingTypeChangeHandler(val as Filling['type'])
@@ -120,7 +126,7 @@ export default function FillingForm({
               type="checkbox"
               id="fit-bounds-on-import"
               checked={Boolean(filling.randomizeFirstStep)}
-              onChange={updateFillingRandomizeFIrstStepHandler}
+              onChange={() => updateFillingRandomizeFirstStepHandler(filling)}
             ></input>
             <label htmlFor="fit-bounds-on-import">Randomize first step</label>
           </div>
@@ -184,9 +190,26 @@ export default function FillingForm({
               type="checkbox"
               id="fit-bounds-on-import"
               checked={Boolean(filling.randomizeFirstStep)}
-              onChange={updateFillingRandomizeFIrstStepHandler}
+              onChange={() => updateFillingRandomizeFirstStepHandler(filling)}
             ></input>
             <label htmlFor="fit-bounds-on-import">Randomize first step</label>
+          </div>
+        </>
+      )}
+
+      {filling.type === 'stroke' && (
+        <>
+          <div className={styles['filling-form-control']}>
+            <label htmlFor="filling-gap">Gap</label>
+            <input
+              type="number"
+              step=".1"
+              value={filling.gap}
+              min={0.5}
+              id="filling-gap"
+              onChange={(e) => updateFillingInputHandler('gap', e)}
+              className="bro-input"
+            ></input>
           </div>
         </>
       )}

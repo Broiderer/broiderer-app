@@ -9,6 +9,14 @@ type Version = {
 export default function Versions() {
   const versions: Version[] = [
     {
+      name: '1.4.0',
+      date: '04/02/2024',
+      tasks: [
+        { content: 'Add stroke filling strategy' },
+        { content: 'Save grid and import settings to localstorage' },
+      ],
+    },
+    {
       name: '1.3.1',
       date: '27/01/2024',
       tasks: [{ content: 'Fix export paths content', type: 'bug' }],

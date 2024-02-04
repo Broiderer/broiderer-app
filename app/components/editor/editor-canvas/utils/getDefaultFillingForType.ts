@@ -12,5 +12,8 @@ export function getDefaultFillingForType(type: Filling['type']): Filling {
     case 'radial': {
       return { type, angle: 0.1, around: { x: 0, y: 0 }, innerGap: 20 }
     }
+    case 'stroke': {
+      return { type, gap: 2, thickness: 1 }
+    }
   }
 }
