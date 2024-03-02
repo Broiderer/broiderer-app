@@ -9,6 +9,14 @@ type Version = {
 export default function Versions() {
   const versions: Version[] = [
     {
+      name: '1.5.0',
+      date: '02/03/2024',
+      tasks: [
+        { content: 'Add tick to checkboxes' },
+        { content: 'Add additional stitch options to the fillings' },
+      ],
+    },
+    {
       name: '1.4.0',
       date: '04/02/2024',
       tasks: [
