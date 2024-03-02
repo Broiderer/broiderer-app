@@ -10,6 +10,7 @@ export type LinearFilling = {
   gap: number
   innerGap: number
   randomizeFirstStep?: boolean
+  additionalStitches: number
 }
 export type RadialFilling = {
   type: 'radial'
@@ -17,6 +18,7 @@ export type RadialFilling = {
   around: { x: number; y: number }
   innerGap: number
   randomizeFirstStep?: boolean
+  additionalStitches: number
 }
 export type AlongFilling = {
   type: 'along'
@@ -25,12 +27,14 @@ export type AlongFilling = {
   offset: number
   innerGap: number
   randomizeFirstStep?: boolean
+  additionalStitches: number
 }
 
 export type StrokeFilling = {
   type: 'stroke'
   gap: number
   thickness: 1
+  additionalStitches: number
 }
 export type Filling =
   | LinearFilling
@@ -40,7 +44,13 @@ export type Filling =
 
 export const getStitches = (
   path: paper.Path | paper.CompoundPath,
-  filling: Filling = { type: 'linear', angle: 0, gap: 2, innerGap: 20 }
+  filling: Filling = {
+    type: 'linear',
+    angle: 0,
+    gap: 2,
+    innerGap: 20,
+    additionalStitches: 2,
+  }
 ) => {
   const pointsPerLines: LineStitches = {}
 
