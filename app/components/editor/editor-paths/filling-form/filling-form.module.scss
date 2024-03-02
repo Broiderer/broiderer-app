@@ -4,17 +4,12 @@
   gap: 10px;
 
   &-control {
-    display: flex;
-    align-items: center;
     gap: 10px;
 
     label {
       white-space: nowrap;
-    }
-
-    input {
-      min-width: 0;
-      flex: 1;
+      display: block;
+      margin-bottom: 5px;
     }
   }
 }

@@ -20,7 +20,6 @@ import EditorPaths from '../editor-paths/editor-paths'
 const ZOOM_FACTOR = 1.05
 export const ZOOM_BOUNDS = { min: 0.1, max: 100 }
 const GRID_GAP = 50
-const ADDITIONAL_STITCHES = { head: 3, tail: 3 }
 
 const EditorCanvas = ({
   settings,
@@ -141,6 +140,11 @@ const EditorCanvas = ({
 
     for (const pathChild of pathChildren) {
       let path = new paper.Path()
+
+      const filling =
+        settings.stitch[pathChild.data['broiderer-import-id']] ||
+        settings.stitch.global
+
       const matchingPath = getPathChildren(stitchLayerSave).find(
         (path) =>
           path.data['broiderer-import-id'] ===
@@ -160,11 +164,11 @@ const EditorCanvas = ({
         }
 
         const firstPoint = newPathPoints[0]
-        for (let i = 0; i < ADDITIONAL_STITCHES.head; i++) {
+        for (let i = 0; i < filling.additionalStitches; i++) {
           newPathPoints.unshift(firstPoint)
         }
         const lastPoint = newPathPoints[newPathPoints.length - 1]
-        for (let i = 0; i < ADDITIONAL_STITCHES.tail; i++) {
+        for (let i = 0; i < filling.additionalStitches; i++) {
           newPathPoints.push(lastPoint)
         }
 

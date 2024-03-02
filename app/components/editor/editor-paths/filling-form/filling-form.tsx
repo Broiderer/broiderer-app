@@ -58,6 +58,16 @@ export default function FillingForm({
     onUpdateFilling({ ...filling, angle: value } as Filling)
   }
 
+  function updateFillingAddStitchHandler(event: ChangeEvent<HTMLInputElement>) {
+    const value = Number(event.target.value)
+
+    if (value < 0) {
+      return
+    }
+
+    onUpdateFilling({ ...filling, additionalStitches: value } as Filling)
+  }
+
   function fillingAlongPathChangeHandler(selectedPath: string) {
     const matching = pathChildren.find(
       (child) => child.data['broiderer-import-id'] === selectedPath
@@ -74,7 +84,7 @@ export default function FillingForm({
   return (
     <div className={styles['filling-form']}>
       <div className={styles['filling-form-control']}>
-        <label>Fill type</label>
+        <label className="bro-muted">Fill type</label>
         <SelectOptions
           options={['linear', 'along', 'stroke']}
           value={filling.type}
@@ -86,7 +96,9 @@ export default function FillingForm({
       {filling.type === 'linear' && (
         <>
           <div className={styles['filling-form-control']}>
-            <label htmlFor="filling-gap">Gap</label>
+            <label htmlFor="filling-gap" className="bro-muted">
+              Gap
+            </label>
             <input
               type="number"
               step=".1"
@@ -98,7 +110,9 @@ export default function FillingForm({
             ></input>
           </div>
           <div className={styles['filling-form-control']}>
-            <label htmlFor="filling-inner-gap">Inner gap</label>
+            <label htmlFor="filling-inner-gap" className="bro-muted">
+              Inner gap
+            </label>
             <input
               type="number"
               value={filling.innerGap}
@@ -109,7 +123,9 @@ export default function FillingForm({
             ></input>
           </div>
           <div className={styles['filling-form-control']}>
-            <label htmlFor="Angle">Angle</label>
+            <label htmlFor="filling-angle" className="bro-muted">
+              Angle
+            </label>
             <input
               type="number"
               value={Math.round((filling.angle * 180) / Math.PI)}
@@ -125,6 +141,7 @@ export default function FillingForm({
             <input
               type="checkbox"
               id="fit-bounds-on-import"
+              className="bro-muted"
               checked={Boolean(filling.randomizeFirstStep)}
               onChange={() => updateFillingRandomizeFirstStepHandler(filling)}
             ></input>
@@ -136,7 +153,9 @@ export default function FillingForm({
       {filling.type === 'along' && (
         <>
           <div className={styles['filling-form-control']}>
-            <label htmlFor="filling-gap">Gap</label>
+            <label htmlFor="filling-gap" className="bro-muted">
+              Gap
+            </label>
             <input
               type="number"
               step=".1"
@@ -148,7 +167,9 @@ export default function FillingForm({
             ></input>
           </div>
           <div className={styles['filling-form-control']}>
-            <label htmlFor="filling-inner-gap">Inner gap</label>
+            <label htmlFor="filling-inner-gap" className="bro-muted">
+              Inner gap
+            </label>
             <input
               type="number"
               value={filling.innerGap}
@@ -160,7 +181,7 @@ export default function FillingForm({
           </div>
 
           <div className={styles['filling-form-control']}>
-            <label>Along</label>
+            <label className="bro-muted">Along</label>
             <SelectOptions
               options={(pathChildren || [])
                 .filter((path) => path.opacity === 0)
@@ -172,7 +193,9 @@ export default function FillingForm({
           </div>
 
           <div className={styles['filling-form-control']}>
-            <label htmlFor="filling-offset">Offset</label>
+            <label htmlFor="filling-offset" className="bro-muted">
+              Offset
+            </label>
             <input
               type="number"
               value={filling.offset}
@@ -189,6 +212,7 @@ export default function FillingForm({
             <input
               type="checkbox"
               id="fit-bounds-on-import"
+              className="bro-muted"
               checked={Boolean(filling.randomizeFirstStep)}
               onChange={() => updateFillingRandomizeFirstStepHandler(filling)}
             ></input>
@@ -200,7 +224,9 @@ export default function FillingForm({
       {filling.type === 'stroke' && (
         <>
           <div className={styles['filling-form-control']}>
-            <label htmlFor="filling-gap">Gap</label>
+            <label htmlFor="filling-gap" className="bro-muted">
+              Gap
+            </label>
             <input
               type="number"
               step=".1"
@@ -213,6 +239,21 @@ export default function FillingForm({
           </div>
         </>
       )}
+
+      <div className={styles['filling-form-control']}>
+        <label htmlFor="additional-stitch" className="bro-muted">
+          Additional stitches
+        </label>
+        <input
+          type="number"
+          value={filling.additionalStitches}
+          min={0}
+          max={10}
+          id="additional-stitch"
+          onChange={(e) => updateFillingAddStitchHandler(e)}
+          className="bro-input"
+        ></input>
+      </div>
     </div>
   )
 }
